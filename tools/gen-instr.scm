@@ -70,7 +70,7 @@ exec sagittarius $0 "$@"
     (newline out)
     (pp `(library (sasm arch ,(string->symbol arch) mnemonics)
 	     (export ,@(lset-union eq? name1 name2))
-	     (import (sasm ,(string->symbol arch) framework))
+	     (import (sasm arch ,(string->symbol arch) framework))
 	   ,@(map (lambda (def) `(define-mnemonic . ,def)) 
 		  (order-mnemonics (append one-byte two-bytes))))
 	out)))

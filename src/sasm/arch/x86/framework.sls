@@ -1,6 +1,6 @@
 ;;; -*- mode:scheme; coding: utf-8; -*-
 ;;;
-;;; sasm/x86/framework - Framework for x86 
+;;; sasm/arch/x86/framework - Framework for x86 
 ;;;  
 ;;;   Copyright (c) 2015  Takashi Kato  <ktakashi@ymail.com>
 ;;;   
@@ -29,9 +29,10 @@
 ;;;  
 
 #!r6rs
-(library (sasm x86 framework)
+(library (sasm arch x86 framework)
     (export define-mnemonic)
-    (import (rnrs))
+    (import (rnrs)
+	    (sasm arch conditions))
 
   (define-syntax define-mnemonic
     (syntax-rules ()
@@ -60,33 +61,34 @@
 	   (lambda args
 	     (let loop ((procs procs))
 	       (cond ((null? procs) 
-		      (assertion-violation 'name "invalid args" args))
+		      (mnemonic-error 'name 'name "invalid operands" args))
 		     (((caar procs) args) ((cdar procs) args))
 		     (else (loop (cdr procs)))))))))
       ((_ name opcodes ...)
        (define-mnemonic "parse" name (opcodes ...) ()))))
 
-    (define (mnemonic-applicable? operands args)
-      ;; TODO proper resolusion
-      (= (length operands) (length args))
-      )
-
-    ;; 
-    (define (mnemonic-encode opcodes ds modrm? immds operands args)
-      (define (compute-size info)
-	;; TODO immediate
-	(let loop ((r 0) (info info))
-	  (cond ((null? info) r)
-		((car info) (loop (+ r 1) (cdr info)))
-		(else (loop r (cdr info))))))
-      (let ((bv (make-bytevector (compute-size opcodes) 0)))
-	(display opcodes) (newline)
-	(let loop ((i 0) (opcodes opcodes))
-	  (cond ((null? opcodes) bv)
-		((car opcodes) 
-		 (bytevector-u8-set! bv i (car opcodes))
-		 (loop (+ i 1) (cdr opcodes)))
-		(else (loop i (cdr opcodes)))))))
+			  
+   (define (mnemonic-applicable? operands args)
+     ;; TODO proper resolusion
+     (= (length operands) (length args))
+     )
+   
+   ;; 
+   (define (mnemonic-encode opcodes ds modrm? immds operands args)
+     (define (compute-size info)
+       ;; TODO immediate
+       (let loop ((r 0) (info info))
+	 (cond ((null? info) r)
+	       ((car info) (loop (+ r 1) (cdr info)))
+	       (else (loop r (cdr info))))))
+     (let ((bv (make-bytevector (compute-size opcodes) 0)))
+       (display opcodes) (newline)
+       (let loop ((i 0) (opcodes opcodes))
+	 (cond ((null? opcodes) bv)
+	       ((car opcodes) 
+		(bytevector-u8-set! bv i (car opcodes))
+		(loop (+ i 1) (cdr opcodes)))
+	       (else (loop i (cdr opcodes)))))))
 
   )
 

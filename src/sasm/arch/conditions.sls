@@ -1,6 +1,6 @@
 ;;; -*- mode:scheme; coding: utf-8; -*-
 ;;;
-;;; sasm/arch/x64/framework - Framework for x64
+;;; sasm/arch/conditions.sls - Archtecture conditions
 ;;;  
 ;;;   Copyright (c) 2015  Takashi Kato  <ktakashi@ymail.com>
 ;;;   
@@ -28,9 +28,23 @@
 ;;;   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;  
 
-;; re-exporting from x86 version
-
 #!r6rs
-(library (sasm arch x64 framework)
-    (export define-mnemonic)
-    (import (sasm arch x86 framework)))
+(library (sasm arch conditions)
+    (export mnemonic-error
+
+	    &mnemonic mnemonic-error? 
+	    mnemonic-error-name mnemonic-error-operands)
+    (import (rnrs))
+
+  (define-condition-type &mnemonic &error
+    make-mnemonic-error mnemonic-error?
+    (name mnemonic-error-name)
+    (operands mnemonic-error-operands))
+
+  (define (mnemonic-error who mnemomic msg operands)
+    (raise (apply condition 
+		  (filter values 
+			  (list (make-mnemonic-error mnemomic operands)
+				(and who (make-who-condition who))
+				(make-message-condition msg))))))
+)
