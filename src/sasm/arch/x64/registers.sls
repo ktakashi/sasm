@@ -1,6 +1,6 @@
 ;;; -*- mode:scheme; coding: utf-8; -*-
 ;;;
-;;; sasm/arch/x64/framework - Framework for x64
+;;; sasm/arch/x64/registers - x64 registers
 ;;;  
 ;;;   Copyright (c) 2015  Takashi Kato  <ktakashi@ymail.com>
 ;;;   
@@ -28,10 +28,12 @@
 ;;;   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;  
 
-;; re-exporting from x86 version
+(library (sasm arch x64 registers)
+    (export RAX
+	    ;; TODO more
+	    )
+    (import (sasm arch x64 framework))
 
-#!r6rs
-(library (sasm arch x64 framework)
-    (export define-mnemonic
-	    define-register)
-    (import (sasm arch x86 framework)))
+  (define-register RAX reg 0 64)
+
+  )

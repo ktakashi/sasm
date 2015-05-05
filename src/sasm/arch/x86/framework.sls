@@ -30,7 +30,8 @@
 
 #!r6rs
 (library (sasm arch x86 framework)
-    (export define-mnemonic)
+    (export define-mnemonic
+	    define-register)
     (import (rnrs)
 	    (sasm arch conditions))
 
@@ -67,10 +68,74 @@
       ((_ name opcodes ...)
        (define-mnemonic "parse" name (opcodes ...) ()))))
 
+  (define-record-type register
+    (fields name ;; for debug
+	    kind index bits)
+    (protocol
+     (lambda (p)
+       (lambda (name kind index bits ext8bit?)
+	 ;; bits must be power of 2
+	 (assert (zero? (bitwise-and bits (- bits 1))))
+	 (p name kind (bitwise-ior index (if ext8bit? #x80 0)) bits)))))
+
+  (define-syntax define-register
+    (syntax-rules ()
+      ((_ name kind index bit)
+       (define-register name kind index bit #f))
+      ((_ name kind index bit ext8bit?)
+       (define name (make-register 'name 'kind index bit ext8bit?)))))
 			  
    (define (mnemonic-applicable? operands args)
-     ;; TODO proper resolusion
-     (= (length operands) (length args))
+     (define (check-operand operand arg)
+       (define (check-type operand arg)
+	 (case (cadr operand)
+	   ((b) ;; byte
+	    (cond ((register? arg) (= (register-bits arg) 8))
+		  ((integer? arg)  (or (<= 0 arg 255)))
+		  (else #f)))
+	   ((bs) ;; byte
+	    (cond ((register? arg) (= (register-bits arg) 8))
+		  ((integer? arg)  (or (<= -128 arg 127)))
+		  (else #f)))
+	   ((vqp)
+	    (cond ((register? arg))
+		  ;; depending on the other operand (register) ...
+		  ((integer? arg)) ;; FIXME
+		  (else #f)))
+	   (else #f)))
+       (define (check-address operand arg)
+	 (case (car operand)
+	   ((E) ;; general purpose register or address
+	    ;; TODO memory address
+	    (and (register? arg)
+		 (eq? (register-kind arg) 'reg)))
+	   ((G)
+	    ;; TODO properly consider ModR/M
+	    (and (register? arg)
+		 (eq? (register-kind arg) 'reg)))
+	   ;; special registers
+	   ((AL) ;; al register...
+	    (and (register? arg)
+		 (eq? (register-kind arg) 'reg)
+		 (= (register-bits arg) 8)
+		 (= (register-index arg) 0)))
+	   ((rAX) ;; AX, EAX and RAX
+	    (and (register? arg)
+		 (eq? (register-kind arg) 'reg)
+		 (> (register-bits arg) 8) ;; more than 8bit
+		 (= (register-index arg) 0)))
+	   ((I) (integer? arg)) ;; immediate
+	   (else #f)))
+       (and (check-address operand arg)
+	    (check-type operand arg)))
+     (define (check-operands operands args)
+       (let loop ((operands operands) (args args))
+	 (or (null? operands)
+	     (and (check-operand (car operands)
+				 (car args))
+		  (loop (cdr operands) (cdr args))))))
+     (and (= (length operands) (length args))
+	  (check-operands operands args))
      )
    
    ;; 
