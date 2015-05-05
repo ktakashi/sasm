@@ -68,7 +68,7 @@ exec sagittarius $0 "$@"
     (newline out)
     (display "#!r6rs" out)
     (newline out)
-    (pp `(library (sasm ,(string->symbol arch) mnemonics)
+    (pp `(library (sasm arch ,(string->symbol arch) mnemonics)
 	     (export ,@(lset-union eq? name1 name2))
 	     (import (sasm ,(string->symbol arch) framework))
 	   ,@(map (lambda (def) `(define-mnemonic . ,def)) 
