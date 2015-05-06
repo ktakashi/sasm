@@ -29,11 +29,26 @@
 ;;;  
 
 (library (sasm arch x64 registers)
-    (export RAX
+    (export RAX RCX RDX RBX RSP RBP RSI RDI R8 R9 R10 R11 R12 R13 R14 R15
 	    ;; TODO more
 	    )
     (import (sasm arch x64 framework))
 
   (define-register RAX reg 0 64)
+  (define-register RCX reg 1 64)
+  (define-register RDX reg 2 64)
+  (define-register RBX reg 3 64)
+  (define-register RSP reg 4 64)
+  (define-register RBP reg 5 64)
+  (define-register RSI reg 6 64)
+  (define-register RDI reg 7 64)
+  (define-register R8  reg 8 64)
+  (define-register R9  reg 9 64)
+  (define-register R10 reg 10 64)
+  (define-register R11 reg 11 64)
+  (define-register R12 reg 12 64)
+  (define-register R13 reg 13 64)
+  (define-register R14 reg 14 64)
+  (define-register R15 reg 15 64)
 
   )

@@ -33,5 +33,6 @@
 #!r6rs
 (library (sasm arch x64 framework)
     (export define-mnemonic
-	    define-register)
+	    define-register
+	    &)
     (import (sasm arch x86 framework)))

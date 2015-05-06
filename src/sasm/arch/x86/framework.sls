@@ -31,8 +31,13 @@
 #!r6rs
 (library (sasm arch x86 framework)
     (export define-mnemonic
-	    define-register)
+	    define-register
+
+	    ;; addressing
+	    &
+	    )
     (import (rnrs)
+	    (rnrs mutable-pairs)
 	    (sasm arch conditions))
 
   (define-syntax define-mnemonic
@@ -48,9 +53,9 @@
 	     (mnemonic-encode '(prefix 
 				op 
 				pf 
-				op2 
-				extop) 
+				op2)
 			      'ds 
+			      extop
 			      modrm? 
 			      'immds
 			      '(operands ...) args)))
@@ -78,6 +83,25 @@
 	 (assert (zero? (bitwise-and bits (- bits 1))))
 	 (p name kind (bitwise-ior index (if ext8bit? #x80 0)) bits)))))
 
+  (define-record-type register+offset
+    (fields offset)
+    (parent register)
+    (protocol
+     (lambda (p)
+       (lambda (reg offset)
+	 (assert (integer? offset))
+	 (let ((n (p (register-name reg) (register-kind reg)
+		     (register-index reg) (register-bits reg) #f)))
+	   (n offset))))))
+
+  (define-record-type address
+    (fields address))
+
+  (define & 
+    (case-lambda 
+     ((reg) (if (register? reg) (& reg 0) (make-address reg)))
+     ((reg offset) (make-register+offset reg offset))))
+
   (define-syntax define-register
     (syntax-rules ()
       ((_ name kind index bit)
@@ -97,7 +121,7 @@
 	    (cond ((register? arg) (= (register-bits arg) 8))
 		  ((integer? arg)  (or (<= -128 arg 127)))
 		  (else #f)))
-	   ((vqp)
+	   ((vqp vds) ;; FIXME
 	    (cond ((register? arg))
 		  ;; depending on the other operand (register) ...
 		  ((integer? arg)) ;; FIXME
@@ -107,11 +131,13 @@
 	 (case (car operand)
 	   ((E) ;; general purpose register or address
 	    ;; TODO memory address
-	    (and (register? arg)
-		 (eq? (register-kind arg) 'reg)))
-	   ((G)
-	    ;; TODO properly consider ModR/M
-	    (and (register? arg)
+	    ;;  symbol: label
+	    ;;  integer: direct address?
+	    (or (and (register? arg) (eq? (register-kind arg) 'reg))
+		(address? arg) ;; address
+		(symbol? arg)))
+	   ((G Z)
+	    (and (and (register? arg) (not (register+offset? arg)))
 		 (eq? (register-kind arg) 'reg)))
 	   ;; special registers
 	   ((AL) ;; al register...
@@ -126,34 +152,159 @@
 		 (= (register-index arg) 0)))
 	   ((I) (integer? arg)) ;; immediate
 	   (else #f)))
+       ;; (display operand) (display arg) (newline)
        (and (check-address operand arg)
 	    (check-type operand arg)))
      (define (check-operands operands args)
        (let loop ((operands operands) (args args))
 	 (or (null? operands)
-	     (and (check-operand (car operands)
-				 (car args))
+	     (and (check-operand (car operands) (car args))
 		  (loop (cdr operands) (cdr args))))))
      (and (= (length operands) (length args))
 	  (check-operands operands args))
      )
    
-   ;; 
-   (define (mnemonic-encode opcodes ds modrm? immds operands args)
-     (define (compute-size info)
-       ;; TODO immediate
-       (let loop ((r 0) (info info))
-	 (cond ((null? info) r)
-	       ((car info) (loop (+ r 1) (cdr info)))
-	       (else (loop r (cdr info))))))
-     (let ((bv (make-bytevector (compute-size opcodes) 0)))
-       (display opcodes) (newline)
-       (let loop ((i 0) (opcodes opcodes))
-	 (cond ((null? opcodes) bv)
-	       ((car opcodes) 
-		(bytevector-u8-set! bv i (car opcodes))
-		(loop (+ i 1) (cdr opcodes)))
-	       (else (loop i (cdr opcodes)))))))
+   ;; Returns 2 values
+   ;;  - bytevector: code
+   ;;  - symbol: label (if there is otherwise #f)
+   ;; opcodes contains u8 and #f including prefix to secondary opcode
+   (define (mnemonic-encode opcodes ds extop modrm? immds operands args)
+     (define (parse-operands operands args)
+       (let loop ((operands operands) 
+		  (args args) 
+		  (rex '()))
+	 (if (null? operands)
+	     (values (reverse rex))
+	     (let ((operand (car operands)) (arg (car args)))
+	       ;; TODO this might not be enough
+	       (cond ((register? arg)
+		      (loop (cdr operands) (cdr args) (cons arg rex)))
+		     (else (loop (cdr operands) (cdr args) rex)))))))
+     (define (compose-rex rex)
+       (if (null? rex)
+	   #f
+	   (bitwise-ior #x48 
+			(if (exists (lambda (reg)
+				      (> (register-index reg) 8)) rex)
+			    #x4
+			    #x0)
+			#x0 ;; TODO SIB.index
+			#x0 ;; TODO ModR/M.rm or SIB.base
+			)))
+     (define (imm->disp imm)
+       (cond ((< imm #xFF)   #x40)
+	     ((< imm #xFFFF) #x80)
+	     (else #x00))) ;; mod.disp32?
+     (define (compose-modrm operands args extop) 
+       (define (find-modrm-arg operands args)
+	 (let loop ((operands operands) (args args))
+	   (case (caar operands)
+	     ((C D E ES EST G H M N P Q R S T) (car args))
+	     (else (loop (cdr operands) (cdr args))))))
+       (let ((arg (find-modrm-arg operands args)))
+	 (bitwise-ior (cond ((register+offset? arg)
+			     (imm->disp (register+offset-offset arg)))
+			    ((register? arg) #xc0)
+			    ;; must be an integer, then
+			    (else (imm->disp arg)))
+		      (if extop (bitwise-arithmetic-shift-left extop 2) 0)
+		      (if (register? arg)
+			  (bitwise-and (register-index arg) #x03)
+			  0
+			  ))))
+     (define (compose-sib operands args) 1)
+     (define (displacement operands args size)
+       (if size
+	   '()
+	   '()))
+     (define (immediate r64? operands args)
+       (define (->u8-list m count)
+	 (let loop ((m m) (r '()) (i 0))
+	   (if (= i count)
+	       (reverse r)
+	       (loop (bitwise-arithmetic-shift-right m 8)
+		     (cons (bitwise-and m #xff) r)
+		     (+ i 1)))))
+       ;; I beleive there is only one immediate value in operands
+       (let loop ((operands operands) (args args))
+	 (if (null? operands)
+	     '()
+	     (case (caar operands)
+	       ((I)
+		(case (cadar operands)
+		  ((b) (->u8-list (car args) 1))
+		  ((w) (->u8-list (car args) 2))
+		  ((l vds) (->u8-list (car args) 4))
+		  ((q) (->u8-list (car args) 8))
+		  ((vqp)
+		   (if r64?
+		       (->u8-list (car args) 8)
+		       (->u8-list (car args) 4)))
+		  (else (assert #f))))
+	       (else (loop (cdr operands) (cdr args)))))))
+     (define (find-label operands args) #f)
+     (define (merge-reg-if-needed opcodes operands args)
+       (define (last-pair p)
+	 (let loop ((p p))
+	   (cond ((null? p) '())
+		 ((null? (cdr p)) p)
+		 (else (loop (cdr p))))))
+       (let loop ((operands operands) (args args))
+	 (if (null? operands) 
+	     opcodes
+	     (case (caar operands)
+	       ((Z) 
+		(let ((p (last-pair opcodes)))
+		  (set-car! p (bitwise-ior (car p) (register-index (car args))))
+		  opcodes))
+	       (else (loop (cdr operands) (cdr args)))))))
+     ;; Intel 64 and IA32 Architectures Software Developer's Manual
+     ;; Volume 2, Table 2-2.
+     ;; NB, we don't support 16 bit addressing mode.
+     (define (sib/disp? modrm)
+       (if modrm
+	   (let ((mod (bitwise-arithmetic-shift-right modrm 5))
+		 (rm  (bitwise-and modrm #x03)))
+	     (case mod
+	       ((#x00) (case rm 
+			 ((#x04) (values #t #f))
+			 ((#x05) (values #f #b10)) ;; disp32
+			 (else   (values #f #f))))
+	       ((#x01) (case rm
+			 ((#x04) (values #t #f))
+			 (else   (values #f #b00))))
+	       ((#x02) (case rm 
+			 ((#x04) (values #t #f))
+			 (else   (values #f #b10))))
+	       (else (values #f #f))))
+	   (values #f #f)))
+     (define (find-disp-size modrm sib)
+       (and sib
+	    (case (bitwise-and sib #x03)
+	      ((#x05)
+	       (case (bitwise-arithmetic-shift-right modrm 5)
+		 ((#x00) #b10)
+		 ((#x01) #b00)
+		 ((#x02) #b10)
+		 (else #f)))
+	      (else #f))))
+	    
+     (let ((rex (parse-operands operands args))
+	   (opcode (merge-reg-if-needed (filter values opcodes) operands args))
+	   (modrm (and modrm? (compose-modrm operands args extop))))
+       (let*-values (((has-sib? disp-size) (sib/disp? modrm))
+		     ((sib) (and has-sib?
+				 (compose-sib operands args)))
+		     ((rex.prefix) (compose-rex rex)))
+	 (values (u8-list->bytevector 
+		  `(,@(if rex.prefix (list rex.prefix) '())
+		    ,@opcode
+		    ,@(if modrm (list modrm) '())
+		    ,@(if sib (list sib) '())
+		    ,@(displacement operands args
+				    (or disp-size (find-disp-size modrm sib)))
+		    ,@(immediate rex.prefix operands args)))
+		 (find-label operands args)))))
 
   )
 
