@@ -34,9 +34,15 @@
 ;;    Volume 2 (2A, 2B & 2C): Instruction Set Reference, A-Z
 ;;  - http://www.c-jump.com/CIS77/CPU/x86/lecture.html
 (library (sasm arch x86 framework)
-    (export define-mnemonic
+    (export define-x86-mnemonic
+	    define-mnemonic ;; needed for x64 framework
 	    define-register
 
+	    register?
+	    register-bits
+	    register-name
+	    register-index
+	    register+displacement?
 	    ;; addressing
 	    &
 	    )
@@ -44,18 +50,26 @@
 	    (rnrs mutable-pairs)
 	    (sasm arch conditions))
 
+  (define-syntax define-x86-mnemonic
+    (syntax-rules ()
+      ((_ name opcodes ...)
+       (define-mnemonic name x86 opcodes ...))))
+  ;; TODO
+  (define (x86 opcodes operands args) '())
+
   (define-syntax define-mnemonic
     (syntax-rules ()
-      ((_ "parse" name
+      ((_ "parse" name prefixer
 	  ((prefix op pf op2 extop s d ds modrm? immds ext (operands ...))
 	   rest ...)
 	  (defs ...))
-       (define-mnemonic "parse" name (rest ...)
+       (define-mnemonic "parse" name prefixer (rest ...)
 	 ;; (type applicable? encode)
 	 (((lambda () 'ext)
 	   (lambda (args) (mnemonic-applicable? '(operands ...) args))
 	   (lambda (args)
-	     (mnemonic-encode '(prefix 
+	     (mnemonic-encode (lambda (oc opr a) (prefixer 'name oc opr a))
+			      '(prefix 
 				op 
 				pf 
 				op2)
@@ -66,7 +80,7 @@
 			      'immds
 			      '(operands ...) args)))
 	  defs ...)))
-      ((_ "parse" name () ((type applicable? encoder) ...))
+      ((_ "parse" name prefixer () ((type applicable? encoder) ...))
        ;; TODO how to check type?
        (define name
 	 (let ((procs (list (cons applicable? encoder) ...)))
@@ -76,8 +90,8 @@
 		      (mnemonic-error 'name 'name "invalid operands" args))
 		     (((caar procs) args) ((cdar procs) args))
 		     (else (loop (cdr procs)))))))))
-      ((_ name opcodes ...)
-       (define-mnemonic "parse" name (opcodes ...) ()))))
+      ((_ name prefixer opcodes ...)
+       (define-mnemonic "parse" name prefixer (opcodes ...) ()))))
 
   (define-record-type register
     (fields name ;; for debug
@@ -89,16 +103,18 @@
 	 (assert (zero? (bitwise-and bits (- bits 1))))
 	 (p name kind (bitwise-ior index (if ext8bit? #x80 0)) bits)))))
 
-  (define-record-type register+offset
-    (fields offset)
+  (define-record-type register+displacement
+    (fields displacement
+	    offset ;; pair of offset register+scalar multiplier or #f
+	    )
     (parent register)
     (protocol
      (lambda (p)
-       (lambda (reg offset)
-	 (assert (integer? offset))
+       (lambda (reg displacement offset)
+	 (assert (integer? displacement))
 	 (let ((n (p (register-name reg) (register-kind reg)
 		     (register-index reg) (register-bits reg) #f)))
-	   (n offset))))))
+	   (n displacement offset))))))
 
   (define-record-type address
     (fields address))
@@ -106,7 +122,11 @@
   (define & 
     (case-lambda 
      ((reg) (if (register? reg) (& reg 0) (make-address reg)))
-     ((reg offset) (make-register+offset reg offset))))
+     ((reg disp) (& reg disp #f))
+     ((reg disp offset) (& reg disp offset 0))
+     ((reg disp offset multiplier) 
+      (make-register+displacement reg disp 
+				  (if offset (cons offset multiplier) #f)))))
 
   (define-syntax define-register
     (syntax-rules ()
@@ -143,7 +163,7 @@
 		(address? arg) ;; address
 		(symbol? arg)))
 	   ((G Z)
-	    (and (and (register? arg) (not (register+offset? arg)))
+	    (and (and (register? arg) (not (register+displacement? arg)))
 		 (eq? (register-kind arg) 'reg)))
 	   ;; special registers
 	   ((AL) ;; al register...
@@ -174,7 +194,10 @@
    ;;  - bytevector: code
    ;;  - symbol: label (if there is otherwise #f)
    ;; opcodes contains u8 and #f including prefix to secondary opcode
-   (define (mnemonic-encode opcodes s d ds extop modrm? immds operands args)
+   ;; TODO refactor it
+   (define (mnemonic-encode prefixer
+			    opcodes s d ds extop modrm? immds operands args)
+
      (define (parse-operands operands args)
        (let loop ((operands operands) 
 		  (args args) 
@@ -186,29 +209,44 @@
 	       (cond ((and (register? arg) (= (register-bits arg) 64))
 		      (loop (cdr operands) (cdr args) (cons arg rex)))
 		     (else (loop (cdr operands) (cdr args) rex)))))))
-     (define (compose-rex rex)
+
+     (define (compose-rex rex modrm sib args)
        (if (null? rex)
 	   #f
-	   (bitwise-ior #x48 
-			(if (exists (lambda (reg)
-				      (> (register-index reg) 8)) rex)
-			    #x4
-			    #x0)
-			#x0 ;; TODO SIB.index
-			#x0 ;; TODO ModR/M.rm or SIB.base
-			)))
+	   (let ((r/m (if (and d (= d 1)) (cadr args)  (car args))))
+	     (bitwise-ior #x48 
+			  (if (exists (lambda (reg)
+					(> (register-index reg) 8)) rex)
+			      #x4
+			      #x0)
+			  (if (and sib 
+				   (register+displacement? r/m)
+				   (register+displacement-offset r/m)
+				   (>= (register-index
+					(car (register+displacement-offset
+					      r/m))) 8))
+			      #x2
+			      #x0)
+			  (if (and (or sib modrm)
+				   (register? r/m)
+				   (>= (register-index r/m) 8))
+			      #x1
+			      #x0)))))
+
      (define (imm->disp imm)
        (cond ((zero? imm) #x00)
 	     ((< imm #xFF)   #x40)
-	     ((< imm #xFFFF) #x80)
+	     ((< imm #xFFFFFFFF) #x80)
 	     (else #x00))) ;; mod.disp32?
+
      (define (compose-modrm operands args extop) 
        ;; TODO can we assume the args has at least 2 elements?
        ;; we also need to consider direction here. fxxk!!!
        (let ((r/m (if (and d (= d 1)) (cadr args) (car args)))
 	     (reg (if (and d (= d 1)) (car args) (cadr args))))
-	 (bitwise-ior (cond ((register+offset? r/m)
-			     (imm->disp (register+offset-offset r/m)))
+	 (bitwise-ior (cond ((register+displacement? r/m)
+			     (imm->disp 
+			      (register+displacement-displacement r/m)))
 			    ((register? r/m) #xc0)
 			    ((integer? reg) (imm->disp reg))
 			    ;; must be an integer, then
@@ -218,11 +256,31 @@
 			     (bitwise-arithmetic-shift-left (register-index reg)
 							    3))
 			    (else 0))
-		      (if (register? r/m)
-			  (bitwise-and (register-index r/m) #x07)
-			  0
-			  ))))
-     (define (compose-sib operands args) 1)
+		      (cond ((and (register+displacement? r/m)
+				  (register+displacement-offset r/m))
+			     ;; SIB
+			     #x04)
+			    ((register? r/m)
+			     (bitwise-and (register-index r/m) #x07))
+			    (else 0)))))
+
+     (define (compose-sib operands args) 
+       (let* ((r/m (if (and d (= d 1)) (cadr args) (car args)))
+	      (offset (register+displacement-offset r/m))
+	      (reg (car offset))
+	      (multiplier (cdr offset)))
+	 (bitwise-ior (case multiplier
+			((1) #x00)
+			((2) #x40)
+			((4) #x80)
+			((8) #xc0)
+			(else (mnemonic-error 'SIB 'SIB
+					      "invalid multiplier for SIB"
+					      multiplier)))
+		      (bitwise-arithmetic-shift-left
+		       (bitwise-and (register-index reg) #x07) 3)
+		      (bitwise-and (register-index r/m) #x07))))
+
      (define (->u8-list m count)
        (let loop ((m m) (r '()) (i 0))
 	 (if (= i count)
@@ -230,15 +288,17 @@
 	     (loop (bitwise-arithmetic-shift-right m 8)
 		   (cons (bitwise-and m #xff) r)
 		   (+ i 1)))))
+
      (define (displacement operands args size)
        ;; For now, assume the second argument has displacement
        (if size
 	   (let ((arg (cadr args)))
-	     (if (register+offset? arg)
-		 (->u8-list (register+offset-offset arg) size)
+	     (if (register+displacement? arg)
+		 (->u8-list (register+displacement-displacement arg) size)
 		 ;; assume integer
 		 (->u8-list arg size)))
 	   '()))
+
      (define (immediate r64? operands args)
        ;; I beleive there is only one immediate value in operands
        (let loop ((operands operands) (args args))
@@ -257,7 +317,9 @@
 		       (->u8-list (car args) 4)))
 		  (else (assert #f))))
 	       (else (loop (cdr operands) (cdr args)))))))
+
      (define (find-label operands args) #f)
+
      (define (merge-reg-if-needed opcodes operands args)
        (define (last-pair p)
 	 (let loop ((p p))
@@ -273,13 +335,14 @@
 		  (set-car! p (bitwise-ior (car p) (register-index (car args))))
 		  opcodes))
 	       (else (loop (cdr operands) (cdr args)))))))
+
      ;; Intel 64 and IA32 Architectures Software Developer's Manual
      ;; Volume 2, Table 2-2.
-     ;; NB, we don't support 16 bit addressing mode.
+     ;; TODO should we also support 16bit addressing mode?
      (define (sib/disp? modrm)
        (if modrm
 	   (let ((mod (bitwise-arithmetic-shift-right modrm 6))
-		 (rm  (bitwise-and modrm #x03)))
+		 (rm  (bitwise-and modrm #x07)))
 	     (case mod
 	       ((#x00) (case rm 
 			 ((#x04) (values #t #f))
@@ -293,11 +356,12 @@
 			 (else   (values #f 4))))
 	       (else (values #f #f))))
 	   (values #f #f)))
+
      (define (find-disp-size modrm sib)
        (and sib
-	    (case (bitwise-and sib #x03)
+	    (case (bitwise-and sib #x07)
 	      ((#x05)
-	       (case (bitwise-arithmetic-shift-right modrm 5)
+	       (case (bitwise-arithmetic-shift-right modrm 6)
 		 ((#x00) #b10)
 		 ((#x01) #b00)
 		 ((#x02) #b10)
@@ -310,9 +374,10 @@
        (let*-values (((has-sib? disp-size) (sib/disp? modrm))
 		     ((sib) (and has-sib?
 				 (compose-sib operands args)))
-		     ((rex.prefix) (compose-rex rex)))
+		     ((rex.prefix) (compose-rex rex modrm sib args)))
 	 (values (u8-list->bytevector 
-		  `(,@(if rex.prefix (list rex.prefix) '())
+		  `(,@(prefixer opcodes operands args)
+		    ,@(if rex.prefix (list rex.prefix) '())
 		    ,@opcode
 		    ,@(if modrm (list modrm) '())
 		    ,@(if sib (list sib) '())

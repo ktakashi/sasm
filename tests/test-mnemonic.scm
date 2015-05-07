@@ -44,8 +44,22 @@
 ;; NB: NASM emits the same instruction so should be fine...
 (test-values (#vu8(#x81 #xc2 #x56 #x34 #x12 #x00) #f) 
 	     (x64:ADD x64:EDX #x123456))
-;; Should we need #x67 prefix for them?
-(test-values (#vu8(#x03 #x3B) #f) (x64:ADD x64:EDI (x64:& x64:EBX)))
-(test-values (#vu8(#x03 #x46 #x08) #f) (x64:ADD x64:EAX (x64:& x64:ESI 8)))
+(test-values (#vu8(#x67 #x03 #x3B) #f) (x64:ADD x64:EDI (x64:& x64:EBX)))
+(test-values (#vu8(#x67 #x03 #x46 #x08) #f) (x64:ADD x64:EAX (x64:& x64:ESI 8)))
+(test-values (#vu8(#x67 #x03 #x9d #x78 #x56 #x34 #x12) #f)
+	     (x64:ADD x64:EBX (x64:& x64:EBP #x12345678)))
 
+(test-values (#vu8(#x67 #x03 #x0c #xbb) #f) 
+	     (x64:ADD x64:ECX (x64:& x64:EBX 0 x64:EDI 4)))
+;; this is an error
+;; should we even exppose 16 bit register from x64?
+(test-error "16bit address on 64bit" mnemonic-error?
+	    (x64:ADD x64:AL (x64:& x64:BX)))
+
+;; REX.X
+(test-values (#vu8(#x4a #x03 #x2c #x90) #f)
+	     (x64:ADD x64:RBP (x64:& x64:RAX 0 x64:R10 4)))
+
+;; REX.R and REX.B
+(test-values (#vu8(#x4d #x01 #xca) #f) (x64:ADD x64:R10 x64:R9))
 (test-end)

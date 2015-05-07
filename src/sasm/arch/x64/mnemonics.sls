@@ -491,16 +491,31 @@
     OR
     ADD)
   (import (sasm arch x64 framework))
-  (define-mnemonic
-    FLDL2E
-    (#f 217 #f 234 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCMOVU
+  (define-x64-mnemonic
+    FISUB
+    (#f 222 #f #f 4 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 4 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    MOVMSKPD
+    (15
+     80
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((G dqp #f) (U pd #f))))
+  (define-x64-mnemonic
+    FCMOVB
     (#f
      218
      #f
      #f
-     3
+     0
      #f
      #f
      #f
@@ -508,306 +523,10 @@
      #f
      #f
      ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    PCMPISTRM
+  (define-x64-mnemonic
+    MINPS
     (15
-     58
-     102
-     98
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse42
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    ADDSD
-    (15
-     88
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    PMADDWD
-    (15
-     245
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     245
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    XCHG
-    (#f
-     144
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     ((Z vqp #f) (rAX #f 0)))
-    (#f
-     135
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     134
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f))))
-  (define-mnemonic
-    FABS
-    (#f 217 #f 225 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CLD
-    (#f 252 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PSRLW
-    (15
-     209
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     209
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f)))
-    (15
-     113
-     102
-     #f
-     2
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     113
-     #f
-     #f
-     2
-     #f
-     #f
-     #f
-     #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    XLAT
-    (#f 215 #f #f #f #f #f #f #f #f #f ((#f #f #f))))
-  (define-mnemonic
-    SYSCALL
-    (15 5 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCMOVBE
-    (#f
-     218
-     #f
-     #f
-     2
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    NOT
-    (#f 247 #f #f 2 #f #f w #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 2 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    IMUL
-    (15
-     175
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f 247 #f #f 5 #f #f b #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 5 #f #f b #t #f #f ((E b #f)))
-    (#f
-     107
-     #f
-     #f
-     #f
-     1
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f) (I bs #f)))
-    (#f
-     105
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f) (I vds #f))))
-  (define-mnemonic
-    SETO
-    (15 144 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    SYSEXIT
-    (15 53 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    RETF
-    (#f 203 #f #f #f #f #f #f #f #f #f ())
-    (#f 202 #f #f #f #f #f #f #f w #f ((I w #f))))
-  (define-mnemonic
-    CVTTPS2PI
-    (15
-     44
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P pi #f) (W psq #f))))
-  (define-mnemonic
-    SETNZ
-    (15 149 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    UCOMISS
-    (15
-     46
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    FNINIT
-    (#f 219 #f 227 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CVTSD2SS
-    (15
-     90
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V ss #f) (W sd #f))))
-  (define-mnemonic
-    PCMPEQW
-    (15
-     117
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     117
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MULPS
-    (15
-     89
+     93
      #f
      #f
      #f
@@ -818,752 +537,7 @@
      #f
      sse1
      ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    SYSENTER
-    (15 52 #f #f #f #f #f #f #f #f #f ())
-    (15 52 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PADDQ
-    (15
-     212
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     212
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    INVVPID
-    (15
-     56
-     102
-     129
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G q #f) (M dq #f)))
-    (15
-     56
-     102
-     129
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G d #f) (M dq #f))))
-  (define-mnemonic
-    SLDT
-    (15 0 #f #f 0 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    CMOVS
-    (15
-     72
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    MOVSX
-    (15
-     191
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E w #f)))
-    (15
-     190
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G vqp #f) (E b #f))))
-  (define-mnemonic
-    POPF
-    (#f 157 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    IRET
-    (#f 207 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FDECSTP
-    (#f 217 #f 246 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CVTPS2PD
-    (15
-     90
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W ps #f))))
-  (define-mnemonic
-    FUCOM
-    (#f 221 #f 225 4 #f #f #f #f #f #f ())
-    (#f 221 #f #f 4 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    RCPPS
-    (15
-     83
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    PUNPCKHQDQ
-    (15
-     109
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f))))
-  (define-mnemonic
-    SETL
-    (15 156 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    JZ
-    (15 132 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 116 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FNSTENV
-    (#f 217 #f #f 6 #f #f #f #t #f #f ((M e #f))))
-  (define-mnemonic
-    FDIVRP
-    (#f 222 #f 241 6 #f #f #f #f #f #f ())
-    (#f
-     222
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    BT
-    (15
-     186
-     #f
-     #f
-     4
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (I b #f)))
-    (15
-     163
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f))))
-  (define-mnemonic
-    PUNPCKHWD
-    (15
-     105
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     105
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    SHUFPD
-    (15
-     198
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f) (I b #f))))
-  (define-mnemonic
-    PUSH
-    (15 168 #f #f #f #f #f #f #f #f #f ((#f #f 5)))
-    (15 160 #f #f #f #f #f #f #f #f #f ((#f #f 4)))
-    (#f 255 #f #f 6 #f #f #f #t #f #f ((E vq #f)))
-    (#f 106 #f #f #f 1 #f #f #f b #f ((I bss #f)))
-    (#f 104 #f #f #f #f #f #f #f v #f ((I vs #f)))
-    (#f 80 #f #f #f #f #f #f #f #f #f ((Z vq #f))))
-  (define-mnemonic
-    FSQRT
-    (#f 217 #f 250 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CMOVNP
-    (15
-     75
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    DEC
-    (#f 254 #f #f 1 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    BSF
-    (15
-     188
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    SQRTSS
-    (15
-     81
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    PUNPCKHDQ
-    (15
-     106
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     106
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MOVHLPS
-    (15
-     18
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V q #f) (U q #f))))
-  (define-mnemonic
-    JNL
-    (15 141 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 125 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    VMRESUME
-    (15 1 #f 195 0 #f #f #f #f #f vmx ()))
-  (define-mnemonic
-    FICOM
-    (#f 222 #f #f 2 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 2 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    CMOVL
-    (15
-     76
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    PSUBUSB
-    (15
-     216
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     216
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FST
-    (#f 221 #f #f 2 #f #f #f #t #f #f ((EST #f #f)))
-    (#f 221 #f #f 2 #f #f #f #t #f #f ((M dr #f)))
-    (#f 217 #f #f 2 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    PADDSB
-    (15
-     236
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     236
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MULPD
-    (15
-     89
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FIMUL
-    (#f 222 #f #f 1 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 1 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    HINT_NOP
-    (15 31 #f #f 7 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 6 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 5 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 4 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 3 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 2 #f #f #f #t #f #f ((E v #f)))
-    (15 31 #f #f 1 #f #f #f #t #f #f ((E v #f)))
-    (15 30 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 29 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 28 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 27 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 26 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 25 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (15 24 #f #f 7 #f #f #f #t #f #f ((E v #f)))
-    (15 24 #f #f 6 #f #f #f #t #f #f ((E v #f)))
-    (15 24 #f #f 5 #f #f #f #t #f #f ((E v #f)))
-    (15 24 #f #f 4 #f #f #f #t #f #f ((E v #f))))
-  (define-mnemonic
-    FIST
-    (#f 223 #f #f 2 #f #f #f #t #f #f ((M wi #f)))
-    (#f 219 #f #f 2 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    FCOM2
-    (#f 220 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    PREFETCHT0
-    (15 24 #f #f 1 #f #f #f #t #f sse1 ((M b #f))))
-  (define-mnemonic
-    XSAVE
-    (15 174 #f #f 4 #f #f #f #t #f #f ((M #f #f))))
-  (define-mnemonic
-    VMPTRLD
-    (15 199 #f #f 6 #f #f #f #t #f vmx ((M q #f))))
-  (define-mnemonic
-    PXOR
-    (15
-     239
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     239
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    CMOVZ
-    (15
-     68
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    LOOPZ
-    (#f 225 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    JMP
-    (#f 255 #f #f 4 #f #f #f #t #f #f ((E q #f)))
-    (#f 235 #f #f #f #f #f #f #f b #f ((J bs #f)))
-    (#f 233 #f #f #f #f #f #f #f v #f ((J vds #f))))
-  (define-mnemonic
-    CLC
-    (#f 248 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PMAXUB
-    (15
-     222
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     222
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    SETZ
-    (15 148 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    BLENDPS
-    (15
-     58
-     102
-     12
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V ps #f) (W ps #f) (I b #f))))
-  (define-mnemonic
-    JLE
-    (15 142 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 126 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FINIT
-    (#f 219 155 227 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CMC
-    (#f 245 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    VERW
-    (15 0 #f #f 5 #f #f #f #t #f #f ((E w #f))))
-  (define-mnemonic
-    CVTSI2SD
-    (15
-     42
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((V sd #f) (E dqp #f))))
-  (define-mnemonic
-    PACKSSWB
-    (15
-     99
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     99
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    PAND
-    (15
-     219
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     219
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    FIDIVR
-    (#f 222 #f #f 7 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 7 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    PCMPESTRI
-    (15
-     58
-     102
-     97
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse42
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    ADDPD
-    (15
-     88
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FCHS
-    (#f 217 #f 224 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PADDUSW
-    (15
-     221
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     221
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    JO
-    (15 128 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 112 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FNOP
-    (#f 217 #f 208 2 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PBLENDW
-    (15
-     58
-     102
-     14
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    PSHUFD
-    (15
-     112
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
     SHRD
     (15
      173
@@ -1589,20 +563,10 @@
      #f
      #f
      ((E vqp #f) (G vqp #f) (I b #f))))
-  (define-mnemonic
-    JNB
-    (15 131 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 115 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    SETS
-    (15 152 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    FPATAN
-    (#f 217 #f 243 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CMOVNO
+  (define-x64-mnemonic
+    UD
     (15
-     65
+     185
      #f
      #f
      #f
@@ -1612,805 +576,8 @@
      #t
      #f
      #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    HADDPD
-    (15
-     124
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    INS
-    (#f
-     109
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((#f #f #f) (DX #f 2)))
-    (#f
-     109
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((#f #f #f) (DX #f 2)))
-    (#f
-     108
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((#f #f #f) (DX #f 2))))
-  (define-mnemonic
-    JNLE
-    (15 143 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 127 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FPTAN
-    (#f 217 #f 242 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCMOVNB
-    (#f
-     219
-     #f
-     #f
-     0
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    FCLEX
-    (#f 219 155 226 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PMINUB
-    (15
-     218
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     218
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    SETP
-    (15 154 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    SHUFPS
-    (15
-     198
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f) (I b #f))))
-  (define-mnemonic
-    INTO
-    (#f 206 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    ORPS
-    (15
-     86
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    SETNB
-    (15 147 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    LTR
-    (15 0 #f #f 3 #f #f #f #t #f #f ((E w #f))))
-  (define-mnemonic
-    MASKMOVDQU
-    (15
-     247
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (U dq #f))))
-  (define-mnemonic
-    PEXTRB
-    (15
-     58
-     102
-     20
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse41
-     ((M b #f) (V dq #f) (I b #f))))
-  (define-mnemonic
-    SETLE
-    (15 158 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    INSERTPS
-    (15
-     58
-     102
-     33
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V ps #f) (U ps #f) (I b #f))))
-  (define-mnemonic
-    MINPD
-    (15
-     93
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FCOS
-    (#f 217 #f 255 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    VMXOFF
-    (15 1 #f 196 0 #f #f #f #f #f vmx ()))
-  (define-mnemonic
-    ANDNPD
-    (15
-     85
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    LSS
-    (15
-     178
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (M ptp #f))))
-  (define-mnemonic
-    FUCOMP
-    (#f 221 #f 233 5 #f #f #f #f #f #f ())
-    (#f 221 #f #f 5 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    ADC
-    (#f
-     131
-     #f
-     #f
-     2
-     1
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I bs #f)))
-    (#f
-     129
-     #f
-     #f
-     2
-     #f
-     #f
-     w
-     #t
-     v
-     #f
-     ((E vqp #f) (I vds #f)))
-    (#f
-     128
-     #f
-     #f
-     2
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     21
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     20
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     19
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     18
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f)))
-    (#f
-     17
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     16
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    FDIVR
-    (#f 220 #f #f 7 #f #f #f #t #f #f ((M dr #f)))
-    (#f
-     220
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 216 #f #f 7 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    FISUBR
-    (#f 222 #f #f 5 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 5 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    CMPPD
-    (15
-     194
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f) (I b #f))))
-  (define-mnemonic
-    MOVQ
-    (15
-     214
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((W q #f) (V q #f)))
-    (15
-     127
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((Q q #f) (P q #f)))
-    (15
-     111
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    CVTTSS2SI
-    (15
-     44
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (W ss #f))))
-  (define-mnemonic
-    LAHF
-    (#f 159 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CVTPI2PD
-    (15
-     42
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((V pd #f) (Q pi #f))))
-  (define-mnemonic
-    STD
-    (#f 253 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    UD2
-    (15 11 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    SETB
-    (15 146 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    VMCLEAR
-    (15 199 102 #f 6 #f #f #f #t #f vmx ((M q #f))))
-  (define-mnemonic
-    FLDENV
-    (#f 217 #f #f 4 #f #f #f #t #f #f ((M e #f))))
-  (define-mnemonic
-    FXTRACT
-    (#f 217 #f 244 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    SYSRET
-    (15 7 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FLDLG2
-    (#f 217 #f 236 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCMOVNE
-    (#f
-     219
-     #f
-     #f
-     1
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    CVTPD2PS
-    (15
-     90
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V ps #f) (W pd #f))))
-  (define-mnemonic
-    CVTPS2DQ
-    (15
-     91
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W ps #f))))
-  (define-mnemonic
-    PCMPGTW
-    (15
-     101
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     101
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    CALL
-    (#f 255 #f #f 2 #f #f #f #t #f #f ((E q #f)))
-    (#f 232 #f #f #f #f #f #f #f v #f ((J vds #f))))
-  (define-mnemonic
-    DIVPD
-    (15
-     94
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    ROR
-    (#f
-     211
-     #f
-     #f
-     1
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (CL #f 1)))
-    (#f
-     210
-     #f
-     #f
-     1
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (CL #f 1)))
-    (#f
-     209
-     #f
-     #f
-     1
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (#f #f #f)))
-    (#f
-     208
-     #f
-     #f
-     1
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (#f #f #f)))
-    (#f
-     193
-     #f
-     #f
-     1
-     #f
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (#f
-     192
-     #f
-     #f
-     1
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f))))
-  (define-mnemonic
-    FCMOVNBE
-    (#f
-     219
-     #f
-     #f
-     2
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    STC
-    (#f 249 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FLDPI
-    (#f 217 #f 235 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    VERR
-    (15 0 #f #f 4 #f #f #f #t #f #f ((E w #f))))
-  (define-mnemonic
-    NEG
-    (#f 247 #f #f 3 #f #f w #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 3 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    LGS
-    (15
-     181
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (M ptp #f))))
-  (define-mnemonic
-    FLDZ
-    (#f 217 #f 238 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PCMPEQD
-    (15
-     118
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     118
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PAVGB
-    (15
-     224
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     224
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MOVDQU
-    (15
-     127
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((W dq #f) (V dq #f)))
-    (15
-     111
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f))))
-  (define-mnemonic
-    FSUBP
-    (#f 222 #f 233 5 #f #f #f #f #f #f ())
-    (#f
-     222
-     #f
-     #f
-     5
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    FPREM1
-    (#f 217 #f 245 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    COMISS
-    (15
-     47
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    JBE
-    (15 134 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 118 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    JMPE
-    (15 184 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
+     ((G #f #f) (E #f #f))))
+  (define-x64-mnemonic
     SHR
     (#f
      211
@@ -2484,51 +651,61 @@
      b
      #f
      ((E b #f) (I b #f))))
-  (define-mnemonic
-    FISTP
-    (#f 223 #f #f 7 #f #f #f #t #f #f ((M qi #f)))
-    (#f 223 #f #f 3 #f #f #f #t #f #f ((M wi #f)))
-    (#f 219 #f #f 3 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    PUNPCKLQDQ
-    (15
-     108
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f))))
-  (define-mnemonic
-    PUSHF
-    (#f 156 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVSXD
-    (#f
-     99
-     #f
-     #f
-     #f
-     #f
-     1
-     #f
-     #t
-     #f
-     #f
-     ((G dqp #f) (E d #f))))
-  (define-mnemonic
-    FSTP1
-    (#f 217 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    MPSADBW
+  (define-x64-mnemonic
+    PEXTRD
     (15
      58
      102
-     66
+     22
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((E d #f) (V dq #f) (I b #f))))
+  (define-x64-mnemonic
+    CVTTPS2PI
+    (15
+     44
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P pi #f) (W psq #f))))
+  (define-x64-mnemonic
+    FIST
+    (#f 223 #f #f 2 #f #f #f #t #f #f ((M wi #f)))
+    (#f 219 #f #f 2 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    SYSRET
+    (15 7 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CVTTPD2PI
+    (15
+     44
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((P pi #f) (W pd #f))))
+  (define-x64-mnemonic
+    BLENDPD
+    (15
+     58
+     102
+     13
      #f
      #f
      #f
@@ -2536,197 +713,8 @@
      #f
      #f
      sse41
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    SETNO
-    (15 145 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    BTC
-    (15
-     187
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (15
-     186
-     #f
-     #f
-     7
-     #f
-     #f
-     #f
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f))))
-  (define-mnemonic
-    STOS
-    (#f 171 #f #f #f #f #f w #f #f #f ((#f #f #f)))
-    (#f 170 #f #f #f #f #f b #f #f #f ((#f #f #f))))
-  (define-mnemonic
-    PUNPCKLDQ
-    (15
-     98
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     98
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    HSUBPS
-    (15
-     125
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    PADDSW
-    (15
-     237
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     237
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FLD1
-    (#f 217 #f 232 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    DIV
-    (#f 247 #f #f 6 #f #f b #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 6 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    STR
-    (15 0 #f #f 1 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    MOVLPD
-    (15
-     19
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((M q #f) (V q #f)))
-    (15
-     18
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((V q #f) (M q #f))))
-  (define-mnemonic
-    CVTSS2SD
-    (15
-     90
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W ss #f))))
-  (define-mnemonic
-    LFS
-    (15
-     180
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (M ptp #f))))
-  (define-mnemonic
-    PMULHUW
-    (15
-     228
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     228
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
+     ((V pd #f) (W pd #f) (I b #f))))
+  (define-x64-mnemonic
     PMULHW
     (15
      229
@@ -2752,125 +740,88 @@
      #f
      mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
-    SHL
-    (#f
-     211
-     #f
-     #f
-     4
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (CL #f 1)))
-    (#f
-     210
-     #f
-     #f
-     4
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (CL #f 1)))
-    (#f
-     209
-     #f
-     #f
-     4
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (#f #f #f)))
-    (#f
-     208
-     #f
-     #f
-     4
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (#f #f #f)))
-    (#f
-     193
-     #f
-     #f
-     4
-     #f
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (#f
-     192
-     #f
-     #f
-     4
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f))))
-  (define-mnemonic
-    PALIGNR
+  (define-x64-mnemonic
+    CALL
+    (#f 255 #f #f 2 #f #f #f #t #f #f ((E q #f)))
+    (#f 232 #f #f #f #f #f #f #f v #f ((J vds #f))))
+  (define-x64-mnemonic
+    MOVQ
     (15
-     58
+     214
      102
-     15
      #f
      #f
      #f
      #f
      #f
      #f
-     ssse3
+     #f
+     sse2
+     ((W q #f) (V q #f)))
+    (15
+     127
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((Q q #f) (P q #f)))
+    (15
+     111
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PADDSB
+    (15
+     236
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
      ((V dq #f) (W dq #f)))
     (15
-     58
+     236
      #f
-     15
+     #f
      #f
      #f
      #f
      #f
      #t
      #f
-     ssse3
+     mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
-    BSR
-    (15
-     189
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    FMULP
-    (#f 222 #f 201 1 #f #f #f #f #f #f ())
+  (define-x64-mnemonic
+    FBSTP
+    (#f 223 #f #f 6 #f #f #f #t #f #f ((M bcd #f))))
+  (define-x64-mnemonic
+    NEG
+    (#f 247 #f #f 3 #f #f w #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 3 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    FCHS
+    (#f 217 #f 224 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FMUL
     (#f
-     222
+     220
      #f
      #f
      1
@@ -2880,128 +831,16 @@
      #t
      #f
      #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    CMPXCHG
-    (15
-     177
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (15
-     176
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    SCAS
-    (#f 175 #f #f #f #f #f w #f #f #f ((#f #f #f)))
-    (#f 174 #f #f #f #f #f b #f #f #f ((#f #f #f))))
-  (define-mnemonic
-    SETNL
-    (15 157 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    PSHUFHW
-    (15
-     112
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    ADDSUBPS
-    (15
-     208
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    MOVSLDUP
-    (15
-     18
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V q #f) (W q #f))))
-  (define-mnemonic
-    FNCLEX
-    (#f 219 #f 226 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PINSRB
-    (15
-     58
-     102
-     32
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse41
-     ((V dq #f) (M b #f) (I b #f))))
-  (define-mnemonic
-    CMOVNZ
-    (15
-     69
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    DIVSS
-    (15
-     94
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
+     ((EST #f #f) (ST #f 0)))
+    (#f 220 #f #f 1 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f #f 1 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    FLDCW
+    (#f 217 #f #f 5 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    SETZ
+    (15 148 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
     MOVD
     (15
      126
@@ -3051,18 +890,11 @@
      #f
      mmx
      ((P q #f) (E d #f))))
-  (define-mnemonic
-    FSTP9
-    (#f 223 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    MUL
-    (#f 247 #f #f 4 #f #f w #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 4 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    HADDPS
+  (define-x64-mnemonic
+    MOVDQU
     (15
-     124
-     242
+     127
+     243
      #f
      #f
      #f
@@ -3070,38 +902,41 @@
      #f
      #f
      #f
-     sse3
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    MOVZX
+     sse2
+     ((W dq #f) (V dq #f)))
     (15
-     183
+     111
+     243
      #f
      #f
      #f
      #f
-     1
-     w
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f))))
+  (define-x64-mnemonic
+    CLC
+    (#f 248 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CVTSS2SI
+    (15
+     45
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
      #t
      #f
-     #f
-     ((G vqp #f) (E w #f)))
+     sse1
+     ((G dqp #f) (W ss #f))))
+  (define-x64-mnemonic
+    PADDW
     (15
-     182
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G vqp #f) (E b #f))))
-  (define-mnemonic
-    PSUBQ
-    (15
-     251
+     253
      102
      #f
      #f
@@ -3113,7 +948,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     251
+     253
      #f
      #f
      #f
@@ -3122,12 +957,52 @@
      #f
      #t
      #f
-     sse2
+     mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
-    CMOVP
+  (define-x64-mnemonic
+    PREFETCHT1
+    (15 24 #f #f 2 #f #f #f #t #f sse1 ((M b #f))))
+  (define-x64-mnemonic
+    CVTTPS2DQ
     (15
-     74
+     91
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W ps #f))))
+  (define-x64-mnemonic
+    FCOMP5
+    (#f 222 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    COMISD
+    (15
+     47
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    FCOMP3
+    (#f 220 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    STI
+    (#f 251 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MOVMSKPS
+    (15
+     80
      #f
      #f
      #f
@@ -3136,15 +1011,12 @@
      #f
      #t
      #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    PAUSE
-    (#f 144 243 #f #f #f #f #f #f #f sse2 ()))
-  (define-mnemonic
-    PSLLD
+     sse1
+     ((G dqp #f) (U ps #f))))
+  (define-x64-mnemonic
+    PADDUSW
     (15
-     242
+     221
      102
      #f
      #f
@@ -3156,7 +1028,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     242
+     221
      #f
      #f
      #f
@@ -3166,21 +1038,12 @@
      #t
      #f
      mmx
-     ((P q #f) (Q q #f)))
-    (15
-     114
-     102
-     #f
-     6
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     114
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FDIVRP
+    (#f 222 #f 241 6 #f #f #f #f #f #f ())
+    (#f
+     222
      #f
      #f
      6
@@ -3188,16 +1051,40 @@
      #f
      #f
      #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    CBW
-    (#f 152 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MAXSS
+     #f
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
+    DIV
+    (#f 247 #f #f 6 #f #f b #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 6 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    INC
+    (#f 254 #f #f 0 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    CVTTSS2SI
     (15
-     95
+     44
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((G dqp #f) (W ss #f))))
+  (define-x64-mnemonic
+    FXSAVE
+    (15 174 #f #f 0 #f #f #f #t #f #f ((M stx #f))))
+  (define-x64-mnemonic
+    XRSTOR
+    (15 174 #f #f 5 #f #f #f #t #f #f ((M #f #f))))
+  (define-x64-mnemonic
+    CMPSS
+    (15
+     194
      243
      #f
      #f
@@ -3207,133 +1094,14 @@
      #f
      #f
      sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    PMOVMSKB
+     ((V ss #f) (W ss #f) (I b #f))))
+  (define-x64-mnemonic
+    PREFETCHNTA
+    (15 24 #f #f 0 #f #f #f #t #f sse1 ((M b #f))))
+  (define-x64-mnemonic
+    LAR
     (15
-     215
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (U dq #f)))
-    (15
-     215
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (N q #f))))
-  (define-mnemonic
-    PSRAW
-    (15
-     225
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     225
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f)))
-    (15
-     113
-     102
-     #f
-     4
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     113
-     #f
-     #f
-     4
-     #f
-     #f
-     #f
-     #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    FUCOMI
-    (#f
-     219
-     #f
-     #f
-     5
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    CVTPS2PI
-    (15
-     45
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P pi #f) (W psq #f))))
-  (define-mnemonic
-    INT
-    (#f 205 #f #f #f #f #f #f #f b #f ((I b #f)))
-    (#f 204 #f #f #f #f #f #f #f #f #f ((#f #f #f))))
-  (define-mnemonic
-    EXTRACTPS
-    (15
-     58
-     102
-     23
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse41
-     ((E d #f) (V dq #f) (I b #f))))
-  (define-mnemonic
-    CMOVB
-    (15
-     66
+     2
      #f
      #f
      #f
@@ -3343,37 +1111,11 @@
      #t
      #f
      #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    PCMPGTB
+     ((G vqp #f) (M w #f))))
+  (define-x64-mnemonic
+    SUBSD
     (15
-     100
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     100
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    MAXSD
-    (15
-     95
+     92
      242
      #f
      #f
@@ -3384,11 +1126,25 @@
      #f
      sse2
      ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    PACKUSWB
+  (define-x64-mnemonic
+    CMOVNP
     (15
-     103
-     102
+     75
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    DIVSD
+    (15
+     94
+     242
      #f
      #f
      #f
@@ -3397,55 +1153,15 @@
      #f
      #f
      sse2
-     ((V dq #f) (W dq #f)))
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    FFREEP
+    (#f 223 #f #f 0 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    CVTDQ2PS
     (15
-     103
+     91
      #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FDIV
-    (#f
-     220
-     #f
-     #f
-     7
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 220 #f #f 6 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f #f 6 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    FSUBRP
-    (#f 222 #f 225 4 #f #f #f #f #f #f ())
-    (#f
-     222
-     #f
-     #f
-     4
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    MOVAPD
-    (15
-     41
-     102
      #f
      #f
      #f
@@ -3454,9 +1170,37 @@
      #f
      #f
      sse2
-     ((W pd #f) (V pd #f)))
+     ((V ps #f) (W dq #f))))
+  (define-x64-mnemonic
+    FCOMIP
+    (#f
+     223
+     #f
+     #f
+     6
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    INVD
+    (15 8 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    RDPMC
+    (15 51 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CBW
+    (#f 152 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FYL2XP1
+    (#f 217 #f 249 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MULPD
     (15
-     40
+     89
      102
      #f
      #f
@@ -3467,24 +1211,18 @@
      #f
      sse2
      ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    CVTPI2PS
+  (define-x64-mnemonic
+    FCOM
+    (#f 220 #f #f 2 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f 209 2 #f #f #f #f #f #f ())
+    (#f 216 #f #f 2 #f #f #f #t #f #f ((ES sr #f))))
+  (define-x64-mnemonic
+    SETNLE
+    (15 159 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    PADDQ
     (15
-     42
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((V ps #f) (Q pi #f))))
-  (define-mnemonic
-    PUNPCKHBW
-    (15
-     104
+     212
      102
      #f
      #f
@@ -3496,7 +1234,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     104
+     212
      #f
      #f
      #f
@@ -3505,29 +1243,23 @@
      #f
      #t
      #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FNSAVE
-    (#f 221 #f #f 6 #f #f #f #t #f #f ((M st #f))))
-  (define-mnemonic
-    MINSD
-    (15
-     93
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
      sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    PCMPEQB
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PUSHF
+    (#f 156 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    LODS
+    (#f 173 #f #f #f #f #f w #f #f #f ((#f #f #f)))
+    (#f 172 #f #f #f #f #f b #f #f #f ((#f #f #f))))
+  (define-x64-mnemonic
+    JO
+    (15 128 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 112 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    PCMPEQD
     (15
-     116
+     118
      102
      #f
      #f
@@ -3539,7 +1271,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     116
+     118
      #f
      #f
      #f
@@ -3550,10 +1282,33 @@
      #f
      mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FXRSTOR
-    (15 174 #f #f 1 #f #f #f #t #f #f ((M stx #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    PSUBUSB
+    (15
+     216
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     216
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
     PSUBW
     (15
      249
@@ -3579,7 +1334,218 @@
      #f
      mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    POP
+    (15 169 #f #f #f #f #f #f #f #f #f ((#f #f 5)))
+    (15 161 #f #f #f #f #f #f #f #f #f ((#f #f 4)))
+    (#f 143 #f #f 0 #f #f w #t #f #f ((E vq #f)))
+    (#f 88 #f #f #f #f #f #f #f #f #f ((Z vq #f))))
+  (define-x64-mnemonic
+    LEAVE
+    (#f 201 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MUL
+    (#f 247 #f #f 4 #f #f w #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 4 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    RSQRTPS
+    (15
+     82
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    RCPSS
+    (15
+     83
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    POPF
+    (#f 157 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FCMOVBE
+    (#f
+     218
+     #f
+     #f
+     2
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    FNSAVE
+    (#f 221 #f #f 6 #f #f #f #t #f #f ((M st #f))))
+  (define-x64-mnemonic
+    FDECSTP
+    (#f 217 #f 246 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FNSTCW
+    (#f 217 #f #f 7 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    MULPS
+    (15
+     89
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    MAXPD
+    (15
+     95
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    SETB
+    (15 146 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    FINCSTP
+    (#f 217 #f 247 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    ROUNDPD
+    (15
+     58
+     102
+     9
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V ps #f) (W pd #f) (I b #f))))
+  (define-x64-mnemonic
+    VMXON
+    (15 199 243 #f 6 #f #f #f #t #f vmx ((M q #f))))
+  (define-x64-mnemonic
+    FSIN
+    (#f 217 #f 254 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    EXTRACTPS
+    (15
+     58
+     102
+     23
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((E d #f) (V dq #f) (I b #f))))
+  (define-x64-mnemonic
+    BT
+    (15
+     186
+     #f
+     #f
+     4
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (I b #f)))
+    (15
+     163
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f))))
+  (define-x64-mnemonic
+    JNL
+    (15 141 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 125 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    PINSRD
+    (15
+     58
+     102
+     34
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((V dq #f) (E d #f) (I b #f))))
+  (define-x64-mnemonic
+    LGS
+    (15
+     181
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (M ptp #f))))
+  (define-x64-mnemonic
+    ADDSUBPD
+    (15
+     208
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    SCAS
+    (#f 175 #f #f #f #f #f w #f #f #f ((#f #f #f)))
+    (#f 174 #f #f #f #f #f b #f #f #f ((#f #f #f))))
+  (define-x64-mnemonic
     SUB
     (#f
      131
@@ -3689,46 +1655,25 @@
      #f
      #f
      ((E b #f) (G b #f))))
-  (define-mnemonic
-    POP
-    (15 169 #f #f #f #f #f #f #f #f #f ((#f #f 5)))
-    (15 161 #f #f #f #f #f #f #f #f #f ((#f #f 4)))
-    (#f 143 #f #f 0 #f #f w #t #f #f ((E vq #f)))
-    (#f 88 #f #f #f #f #f #f #f #f #f ((Z vq #f))))
-  (define-mnemonic
-    FSUB
+  (define-x64-mnemonic
+    FLDLN2
+    (#f 217 #f 237 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FADDP
+    (#f 222 #f 193 0 #f #f #f #f #f #f ())
     (#f
-     220
+     222
      #f
      #f
-     5
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 220 #f #f 4 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f #f 4 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    FTST
-    (#f 217 #f 228 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PEXTRD
-    (15
-     58
-     102
-     22
-     #f
+     0
      #f
      #f
      #f
      #t
      #f
-     sse41
-     ((E d #f) (V dq #f) (I b #f))))
-  (define-mnemonic
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
     SQRTPD
     (15
      81
@@ -3742,50 +1687,10 @@
      #f
      sse2
      ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    MOVAPS
+  (define-x64-mnemonic
+    PSLLD
     (15
-     41
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((W ps #f) (V ps #f)))
-    (15
-     40
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    CVTPD2PI
-    (15
-     45
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((P pi #f) (W pd #f))))
-  (define-mnemonic
-    PSRLD
-    (15
-     210
+     242
      102
      #f
      #f
@@ -3797,7 +1702,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     210
+     242
      #f
      #f
      #f
@@ -3812,7 +1717,7 @@
      114
      102
      #f
-     2
+     6
      #f
      #f
      #f
@@ -3824,7 +1729,7 @@
      114
      #f
      #f
-     2
+     6
      #f
      #f
      #f
@@ -3832,19 +1737,30 @@
      b
      mmx
      ((N q #f) (I b #f))))
-  (define-mnemonic
-    BSWAP
-    (15 200 #f #f #f #f #f #f #f #f #f ((Z vqp #f))))
-  (define-mnemonic
-    WRMSR
-    (15 48 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    EMMS
-    (15 119 #f #f #f #f #f #f #f #f mmx ()))
-  (define-mnemonic
-    PANDN
+  (define-x64-mnemonic
+    FLDZ
+    (#f 217 #f 238 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    LTR
+    (15 0 #f #f 3 #f #f #f #t #f #f ((E w #f))))
+  (define-x64-mnemonic
+    UNPCKLPS
     (15
-     223
+     20
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W q #f))))
+  (define-x64-mnemonic
+    PXOR
+    (15
+     239
      102
      #f
      #f
@@ -3856,7 +1772,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     223
+     239
      #f
      #f
      #f
@@ -3867,11 +1783,10 @@
      #f
      mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PMAXSW
+  (define-x64-mnemonic
+    CVTPS2PD
     (15
-     238
-     102
+     90
      #f
      #f
      #f
@@ -3879,38 +1794,75 @@
      #f
      #f
      #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     238
      #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PINSRD
+     sse2
+     ((V pd #f) (W ps #f))))
+  (define-x64-mnemonic
+    MPSADBW
     (15
      58
      102
-     34
+     66
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    LOOPZ
+    (#f 225 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    FABS
+    (#f 217 #f 225 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CMOVNS
+    (15
+     73
+     #f
+     #f
      #f
      #f
      #f
      #f
      #t
      #f
-     sse41
-     ((V dq #f) (E d #f) (I b #f))))
-  (define-mnemonic
-    HSUBPD
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    PSRLDQ
     (15
-     125
+     115
+     102
+     #f
+     3
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f))))
+  (define-x64-mnemonic
+    FCMOVU
+    (#f
+     218
+     #f
+     #f
+     3
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    PCMPEQW
+    (15
+     117
      102
      #f
      #f
@@ -3919,9 +1871,42 @@
      #f
      #f
      #f
-     sse3
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     117
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    VMXOFF
+    (15 1 #f 196 0 #f #f #f #f #f vmx ()))
+  (define-x64-mnemonic
+    CVTTSD2SI
+    (15
+     44
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((G dqp #f) (W sd #f))))
+  (define-x64-mnemonic
+    JNBE
+    (15 135 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 119 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
     MOVQ2DQ
     (15
      214
@@ -3935,39 +1920,13 @@
      #f
      sse2
      ((V dq #f) (N q #f))))
-  (define-mnemonic
-    CVTPD2DQ
+  (define-x64-mnemonic
+    FPREM1
+    (#f 217 #f 245 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CMOVNL
     (15
-     230
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W pd #f))))
-  (define-mnemonic
-    FSCALE
-    (#f 217 #f 253 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PAVGW
-    (15
-     227
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     227
+     77
      #f
      #f
      #f
@@ -3976,15 +1935,13 @@
      #f
      #t
      #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FYL2X
-    (#f 217 #f 241 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MAXPS
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    CVTPD2PS
     (15
-     95
+     90
+     102
      #f
      #f
      #f
@@ -3992,104 +1949,32 @@
      #f
      #f
      #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    SUBPS
-    (15
-     92
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    DPPS
+     sse2
+     ((V ps #f) (W pd #f))))
+  (define-x64-mnemonic
+    FSTCW
+    (#f 217 155 #f 7 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    CMPXCHG8B
+    (15 199 #f #f 1 #f #f #f #t #f #f ((M q #f))))
+  (define-x64-mnemonic
+    FRSTOR
+    (#f 221 #f #f 4 #f #f #f #t #f #f ((M st #f))))
+  (define-x64-mnemonic
+    PCMPISTRI
     (15
      58
      102
-     64
+     99
      #f
      #f
      #f
      #f
      #f
      #f
-     sse41
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    MOVMSKPD
-    (15
-     80
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((G dqp #f) (U pd #f))))
-  (define-mnemonic
-    PMULLW
-    (15
-     213
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     213
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PUNPCKLBW
-    (15
-     96
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     96
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
+     sse42
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
     ADD
     (#f
      131
@@ -4199,16 +2084,172 @@
      #f
      #f
      ((E b #f) (G b #f))))
-  (define-mnemonic
-    FSTENV
-    (#f 217 155 #f 6 #f #f #f #t #f #f ((M e #f))))
-  (define-mnemonic
-    FFREEP
-    (#f 223 #f #f 0 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    CMOVO
+  (define-x64-mnemonic
+    JNLE
+    (15 143 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 127 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    MOVHPS
     (15
-     64
+     23
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((M q #f) (V q #f)))
+    (15
+     22
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((V q #f) (M q #f))))
+  (define-x64-mnemonic
+    ROUNDSS
+    (15
+     58
+     102
+     10
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V ss #f) (W ss #f) (I b #f))))
+  (define-x64-mnemonic
+    FXCH7
+    (#f 223 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    IDIV
+    (#f 247 #f #f 7 #f #f b #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 7 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    CVTSI2SD
+    (15
+     42
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((V sd #f) (E dqp #f))))
+  (define-x64-mnemonic
+    BSWAP
+    (15 200 #f #f #f #f #f #f #f #f #f ((Z vqp #f))))
+  (define-x64-mnemonic
+    ROR
+    (#f
+     211
+     #f
+     #f
+     1
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (CL #f 1)))
+    (#f
+     210
+     #f
+     #f
+     1
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (CL #f 1)))
+    (#f
+     209
+     #f
+     #f
+     1
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (#f #f #f)))
+    (#f
+     208
+     #f
+     #f
+     1
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (#f #f #f)))
+    (#f
+     193
+     #f
+     #f
+     1
+     #f
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (#f
+     192
+     #f
+     #f
+     1
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f))))
+  (define-x64-mnemonic
+    FLDL2E
+    (#f 217 #f 234 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FCLEX
+    (#f 219 155 226 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    UNPCKHPD
+    (15
+     21
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    CMOVNZ
+    (15
+     69
      #f
      #f
      #f
@@ -4219,72 +2260,10 @@
      #f
      #f
      ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    RSQRTPS
+  (define-x64-mnemonic
+    PMADDWD
     (15
-     82
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    OUTS
-    (#f
-     111
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((DX #f 2) (#f #f #f)))
-    (#f
-     111
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((DX #f 2) (#f #f #f)))
-    (#f
-     110
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((DX #f 2) (#f #f #f))))
-  (define-mnemonic
-    JNBE
-    (15 135 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 119 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    VMLAUNCH
-    (15 1 #f 194 0 #f #f #f #f #f vmx ()))
-  (define-mnemonic
-    PREFETCHNTA
-    (15 24 #f #f 0 #f #f #f #t #f sse1 ((M b #f))))
-  (define-mnemonic
-    PUNPCKLWD
-    (15
-     97
+     245
      102
      #f
      #f
@@ -4296,7 +2275,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     97
+     245
      #f
      #f
      #f
@@ -4307,10 +2286,10 @@
      #f
      mmx
      ((P q #f) (Q d #f))))
-  (define-mnemonic
-    PACKSSDW
+  (define-x64-mnemonic
+    MASKMOVDQU
     (15
-     107
+     247
      102
      #f
      #f
@@ -4320,10 +2299,15 @@
      #f
      #f
      sse2
-     ((V dq #f) (W dq #f)))
+     ((V dq #f) (U dq #f))))
+  (define-x64-mnemonic
+    FLDLG2
+    (#f 217 #f 236 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    POPCNT
     (15
-     107
-     #f
+     184
+     243
      #f
      #f
      #f
@@ -4331,12 +2315,12 @@
      #f
      #t
      #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PADDUSB
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    MOVAPD
     (15
-     220
+     41
      102
      #f
      #f
@@ -4346,20 +2330,72 @@
      #f
      #f
      sse2
-     ((V dq #f) (W dq #f)))
+     ((W pd #f) (V pd #f)))
     (15
-     220
+     40
+     102
      #f
      #f
      #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    INT
+    (#f 205 #f #f #f #f #f #f #f b #f ((I b #f)))
+    (#f 204 #f #f #f #f #f #f #f #f #f ((#f #f #f))))
+  (define-x64-mnemonic
+    FCOMI
+    (#f
+     219
+     #f
+     #f
+     6
      #f
      #f
      #f
      #t
      #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    FTST
+    (#f 217 #f 228 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MAXPS
+    (15
+     95
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    SUBSS
+    (15
+     92
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    FSINCOS
+    (#f 217 #f 251 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
     LDDQU
     (15
      240
@@ -4373,99 +2409,26 @@
      #f
      sse3
      ((V dq #f) (M dq #f))))
-  (define-mnemonic
-    CMOVNLE
+  (define-x64-mnemonic
+    FIDIVR
+    (#f 222 #f #f 7 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 7 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    PCMPGTW
     (15
-     79
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    PSRLDQ
-    (15
-     115
-     102
-     #f
-     3
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f))))
-  (define-mnemonic
-    FFREE
-    (#f 221 #f #f 0 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    MOVLPS
-    (15
-     19
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((M q #f) (V q #f)))
-    (15
-     18
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((V q #f) (M q #f))))
-  (define-mnemonic
-    JS
-    (15 136 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 120 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    INVD
-    (15 8 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVNTDQ
-    (15
-     231
+     101
      102
      #f
      #f
      #f
      #f
      #f
-     #t
+     #f
      #f
      sse2
-     ((M dq #f) (V dq #f))))
-  (define-mnemonic
-    NOP
-    (15 31 #f #f 0 #f #f #f #t #f #f ((E v #f)))
-    (15 13 #f #f #f #f #f #f #t #f #f ((E v #f)))
-    (#f 144 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    STI
-    (#f 251 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    LLDT
-    (15 0 #f #f 2 #f #f #f #t #f #f ((E w #f))))
-  (define-mnemonic
-    LAR
+     ((V dq #f) (W dq #f)))
     (15
-     2
+     101
      #f
      #f
      #f
@@ -4474,90 +2437,142 @@
      #f
      #t
      #f
-     #f
-     ((G vqp #f) (M w #f))))
-  (define-mnemonic
-    RCR
-    (#f
-     211
-     #f
-     #f
-     3
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (CL #f 1)))
-    (#f
-     210
-     #f
-     #f
-     3
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (CL #f 1)))
-    (#f
-     209
-     #f
-     #f
-     3
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (#f #f #f)))
-    (#f
-     208
-     #f
-     #f
-     3
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (#f #f #f)))
-    (#f
-     193
-     #f
-     #f
-     3
-     #f
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (#f
-     192
-     #f
-     #f
-     3
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f))))
-  (define-mnemonic
-    FNSTSW
-    (#f 223 #f 224 4 #f #f #f #f #f #f ((AX #f 0)))
-    (#f 221 #f #f 7 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    MINSS
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    HSUBPS
     (15
-     93
+     125
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    JB
+    (15 130 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 114 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    SYSENTER
+    (15 52 #f #f #f #f #f #f #f #f #f ())
+    (15 52 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    XORPS
+    (15
+     87
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    PACKSSWB
+    (15
+     99
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     99
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    UNPCKLPD
+    (15
+     20
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    FXTRACT
+    (#f 217 #f 244 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    DPPD
+    (15
+     58
+     102
+     65
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    LEA
+    (#f
+     141
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (M #f #f))))
+  (define-x64-mnemonic
+    FNOP
+    (#f 217 #f 208 2 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FINIT
+    (#f 219 155 227 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    JECXZ
+    (#f 227 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    DIVPD
+    (15
+     94
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    MAXSS
+    (15
+     95
      243
      #f
      #f
@@ -4568,66 +2583,14 @@
      #f
      sse1
      ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    FADDP
-    (#f 222 #f 193 0 #f #f #f #f #f #f ())
-    (#f
-     222
-     #f
-     #f
-     0
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    COMISD
+  (define-x64-mnemonic
+    CLD
+    (#f 252 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MOVSHDUP
     (15
-     47
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    INVEPT
-    (15
-     56
-     102
-     128
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G q #f) (M dq #f)))
-    (15
-     56
-     102
-     128
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G d #f) (M dq #f))))
-  (define-mnemonic
-    ADDSUBPD
-    (15
-     208
-     102
+     22
+     243
      #f
      #f
      #f
@@ -4636,14 +2599,11 @@
      #f
      #f
      sse3
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    RDPMC
-    (15 51 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CMOVNB
+     ((V q #f) (W q #f))))
+  (define-x64-mnemonic
+    CMOVNBE
     (15
-     67
+     71
      #f
      #f
      #f
@@ -4654,10 +2614,7 @@
      #f
      #f
      ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    CWD
-    (#f 153 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
+  (define-x64-mnemonic
     SAR
     (#f
      211
@@ -4731,1084 +2688,11 @@
      b
      #f
      ((E b #f) (I b #f))))
-  (define-mnemonic
-    PREFETCHT2
-    (15 24 #f #f 3 #f #f #f #t #f sse1 ((M b #f))))
-  (define-mnemonic
-    PADDW
-    (15
-     253
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     253
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    UNPCKHPS
-    (15
-     21
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W q #f))))
-  (define-mnemonic
-    FINCSTP
-    (#f 217 #f 247 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FRNDINT
-    (#f 217 #f 252 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVLHPS
-    (15
-     22
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V q #f) (U q #f))))
-  (define-mnemonic
-    CMP
-    (#f
-     131
-     #f
-     #f
-     7
-     1
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (I bs #f)))
-    (#f
-     129
-     #f
-     #f
-     7
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (I vds #f)))
-    (#f
-     128
-     #f
-     #f
-     7
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     61
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     60
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     59
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     58
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f)))
-    (#f
-     57
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     56
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    AND
-    (#f
-     131
-     #f
-     #f
-     4
-     1
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I bs #f)))
-    (#f
-     129
-     #f
-     #f
-     4
-     #f
-     #f
-     w
-     #t
-     v
-     #f
-     ((E vqp #f) (I vds #f)))
-    (#f
-     128
-     #f
-     #f
-     4
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     37
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     36
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     35
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     34
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f)))
-    (#f
-     33
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     32
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    INC
-    (#f 254 #f #f 0 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    FLD
-    (#f 221 #f #f 0 #f #f #f #t #f #f ((M dr #f)))
-    (#f 219 #f #f 5 #f #f #f #t #f #f ((M er #f)))
-    (#f 217 #f #f 0 #f #f #f #t #f #f ((ES sr #f))))
-  (define-mnemonic
-    MOVMSKPS
-    (15
-     80
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (U ps #f))))
-  (define-mnemonic
-    CMOVBE
-    (15
-     70
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    VMWRITE
-    (15
-     121
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G q #f) (E q #f)))
-    (15
-     121
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((G d #f) (E d #f))))
-  (define-mnemonic
-    SETNLE
-    (15 159 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    FBSTP
-    (#f 223 #f #f 6 #f #f #f #t #f #f ((M bcd #f))))
-  (define-mnemonic
-    FXCH
-    (#f 217 #f 201 1 #f #f #f #f #f #f ())
-    (#f 217 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    LODS
-    (#f 173 #f #f #f #f #f w #f #f #f ((#f #f #f)))
-    (#f 172 #f #f #f #f #f b #f #f #f ((#f #f #f))))
-  (define-mnemonic
-    FSTCW
-    (#f 217 155 #f 7 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    MOVHPD
-    (15
-     23
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((M q #f) (V q #f)))
-    (15
-     22
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((V q #f) (M q #f))))
-  (define-mnemonic
-    PREFETCHT1
-    (15 24 #f #f 2 #f #f #f #t #f sse1 ((M b #f))))
-  (define-mnemonic
-    FPREM
-    (#f 217 #f 248 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    LOOP
-    (#f 226 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    UCOMISD
-    (15
-     46
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    ANDPS
-    (15
-     84
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    PMULUDQ
-    (15
-     244
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     244
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    FIDIV
-    (#f 222 #f #f 6 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 6 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    UNPCKLPS
-    (15
-     20
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W q #f))))
-  (define-mnemonic
-    FICOMP
-    (#f 222 #f #f 3 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 3 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    CLTS
-    (15 6 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CVTSS2SI
-    (15
-     45
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (W ss #f))))
-  (define-mnemonic
-    ROUNDSS
-    (15
-     58
-     102
-     10
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V ss #f) (W ss #f) (I b #f))))
-  (define-mnemonic
-    ANDPD
-    (15
-     84
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FXCH7
-    (#f 223 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    CVTSI2SS
-    (15
-     42
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((V ss #f) (E dqp #f))))
-  (define-mnemonic
-    MOVDQA
-    (15
-     127
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((W dq #f) (V dq #f)))
-    (15
-     111
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f))))
-  (define-mnemonic
-    SETNP
-    (15 155 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    LSL
-    (15
-     3
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (M w #f))))
-  (define-mnemonic
-    ROUNDPD
-    (15
-     58
-     102
-     9
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V ps #f) (W pd #f) (I b #f))))
-  (define-mnemonic
-    RCPSS
-    (15
-     83
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    VMREAD
-    (15
-     120
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((E q #f) (G q #f)))
-    (15
-     120
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     vmx
-     ((E d #f) (G d #f))))
-  (define-mnemonic
-    ROUNDSD
-    (15
-     58
-     102
-     11
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V sd #f) (W sd #f) (I b #f))))
-  (define-mnemonic
-    RSQRTSS
-    (15
-     82
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    CLI
-    (#f 250 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PSRAD
-    (15
-     226
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     226
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f)))
-    (15
-     114
-     102
-     #f
-     4
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     114
-     #f
-     #f
-     4
-     #f
-     #f
-     #f
-     #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    RCL
-    (#f
-     211
-     #f
-     #f
-     2
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (CL #f 1)))
-    (#f
-     210
-     #f
-     #f
-     2
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (CL #f 1)))
-    (#f
-     209
-     #f
-     #f
-     2
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (#f #f #f)))
-    (#f
-     208
-     #f
-     #f
-     2
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (#f #f #f)))
-    (#f
-     193
-     #f
-     #f
-     2
-     #f
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (#f
-     192
-     #f
-     #f
-     2
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f))))
-  (define-mnemonic
-    MOVSHDUP
-    (15
-     22
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V q #f) (W q #f))))
-  (define-mnemonic
-    FCOMP3
-    (#f 220 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    FBLD
-    (#f 223 #f #f 4 #f #f #f #t #f #f ((M bcd #f))))
-  (define-mnemonic
-    JECXZ
-    (#f 227 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    SAL
-    (#f
-     211
-     #f
-     #f
-     6
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (CL #f 1)))
-    (#f
-     210
-     #f
-     #f
-     6
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (CL #f 1)))
-    (#f
-     209
-     #f
-     #f
-     6
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (#f #f #f)))
-    (#f
-     208
-     #f
-     #f
-     6
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (#f #f #f)))
-    (#f
-     193
-     #f
-     #f
-     6
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (#f
-     192
-     #f
-     #f
-     6
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f))))
-  (define-mnemonic
-    CMPXCHG8B
-    (15 199 #f #f 1 #f #f #f #t #f #f ((M q #f))))
-  (define-mnemonic
-    FLDLN2
-    (#f 217 #f 237 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    VMXON
-    (15 199 243 #f 6 #f #f #f #t #f vmx ((M q #f))))
-  (define-mnemonic
-    OR
-    (#f
-     131
-     #f
-     #f
-     1
-     1
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I bs #f)))
-    (#f
-     129
-     #f
-     #f
-     1
-     #f
-     #f
-     w
-     #t
-     v
-     #f
-     ((E vqp #f) (I vds #f)))
-    (#f
-     128
-     #f
-     #f
-     1
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     13
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     12
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     11
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     10
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f)))
-    (#f
-     9
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     8
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    FWAIT
-    (#f 155 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVUPD
-    (15
-     17
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((W pd #f) (V pd #f)))
-    (15
-     16
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    DIVSD
-    (15
-     94
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    MOVNTQ
-    (15
-     231
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((M q #f) (P q #f))))
-  (define-mnemonic
-    FLDL2T
-    (#f 217 #f 233 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    XORPD
-    (15
-     87
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    FUCOMP
+    (#f 221 #f 233 5 #f #f #f #f #f #f ())
+    (#f 221 #f #f 5 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
     PSLLDQ
     (15
      115
@@ -5822,17 +2706,734 @@
      b
      sse2
      ((U dq #f) (I b #f))))
-  (define-mnemonic
-    FSAVE
-    (#f 221 155 #f 6 #f #f #f #t #f #f ((M st #f))))
-  (define-mnemonic
-    FIADD
-    (#f 222 #f #f 0 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 0 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    SETNBE
-    (15 151 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    FDIV
+    (#f
+     220
+     #f
+     #f
+     7
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0)))
+    (#f 220 #f #f 6 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f #f 6 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    CVTSI2SS
+    (15
+     42
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((V ss #f) (E dqp #f))))
+  (define-x64-mnemonic
+    MOVZX
+    (15
+     183
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E w #f)))
+    (15
+     182
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G vqp #f) (E b #f))))
+  (define-x64-mnemonic
+    FSTP1
+    (#f 217 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    MOVSXD
+    (#f
+     99
+     #f
+     #f
+     #f
+     #f
+     1
+     #f
+     #t
+     #f
+     #f
+     ((G dqp #f) (E d #f))))
+  (define-x64-mnemonic
+    SAHF
+    (#f 158 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SHL
+    (#f
+     211
+     #f
+     #f
+     4
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (CL #f 1)))
+    (#f
+     210
+     #f
+     #f
+     4
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (CL #f 1)))
+    (#f
+     209
+     #f
+     #f
+     4
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (#f #f #f)))
+    (#f
+     208
+     #f
+     #f
+     4
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (#f #f #f)))
+    (#f
+     193
+     #f
+     #f
+     4
+     #f
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (#f
+     192
+     #f
+     #f
+     4
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f))))
+  (define-x64-mnemonic
+    FCOMP
+    (#f 220 #f #f 3 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f 217 3 #f #f #f #f #f #f ())
+    (#f 216 #f #f 3 #f #f #f #t #f #f ((ES sr #f))))
+  (define-x64-mnemonic
+    FNSTENV
+    (#f 217 #f #f 6 #f #f #f #t #f #f ((M e #f))))
+  (define-x64-mnemonic
+    DIVPS
+    (15
+     94
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    CMPS
+    (#f
+     167
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((#f #f #f) (#f #f #f)))
+    (#f
+     166
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((#f #f #f) (#f #f #f))))
+  (define-x64-mnemonic
+    DEC
+    (#f 254 #f #f 1 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    PANDN
+    (15
+     223
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     223
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FWAIT
+    (#f 155 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MOVLPS
+    (15
+     19
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((M q #f) (V q #f)))
+    (15
+     18
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((V q #f) (M q #f))))
+  (define-x64-mnemonic
+    FXCH4
+    (#f 221 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    CMOVBE
+    (15
+     70
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    XADD
+    (15
+     193
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (15
+     192
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    PMOVMSKB
+    (15
+     215
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((G dqp #f) (U dq #f)))
+    (15
+     215
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((G dqp #f) (N q #f))))
+  (define-x64-mnemonic
+    FISTP
+    (#f 223 #f #f 7 #f #f #f #t #f #f ((M qi #f)))
+    (#f 223 #f #f 3 #f #f #f #t #f #f ((M wi #f)))
+    (#f 219 #f #f 3 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    ROUNDSD
+    (15
+     58
+     102
+     11
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V sd #f) (W sd #f) (I b #f))))
+  (define-x64-mnemonic
+    CMOVS
+    (15
+     72
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    ADDSS
+    (15
+     88
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    ADDSD
+    (15
+     88
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    FFREE
+    (#f 221 #f #f 0 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    COMISS
+    (15
+     47
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    SETS
+    (15 152 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    ADDPS
+    (15
+     88
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    STOS
+    (#f 171 #f #f #f #f #f w #f #f #f ((#f #f #f)))
+    (#f 170 #f #f #f #f #f b #f #f #f ((#f #f #f))))
+  (define-x64-mnemonic
+    LOOP
+    (#f 226 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    PREFETCHT2
+    (15 24 #f #f 3 #f #f #f #t #f sse1 ((M b #f))))
+  (define-x64-mnemonic
+    CVTPD2DQ
+    (15
+     230
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W pd #f))))
+  (define-x64-mnemonic
+    SUBPS
+    (15
+     92
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    CMPSD
+    (15
+     194
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f) (I b #f))))
+  (define-x64-mnemonic
+    FSTENV
+    (#f 217 155 #f 6 #f #f #f #t #f #f ((M e #f))))
+  (define-x64-mnemonic
+    PAND
+    (15
+     219
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     219
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    PADDB
+    (15
+     252
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     252
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    BTR
+    (15
+     186
+     #f
+     #f
+     6
+     #f
+     #f
+     #f
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (15
+     179
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f))))
+  (define-x64-mnemonic
+    FDIVR
+    (#f 220 #f #f 7 #f #f #f #t #f #f ((M dr #f)))
+    (#f
+     220
+     #f
+     #f
+     6
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0)))
+    (#f 216 #f #f 7 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    FCMOVE
+    (#f
+     218
+     #f
+     #f
+     1
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    VERW
+    (15 0 #f #f 5 #f #f #f #t #f #f ((E w #f))))
+  (define-x64-mnemonic
+    VMRESUME
+    (15 1 #f 195 0 #f #f #f #f #f vmx ()))
+  (define-x64-mnemonic
+    MOVSD
+    (15
+     17
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((W sd #f) (V sd #f)))
+    (15
+     16
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    PALIGNR
+    (15
+     58
+     102
+     15
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     ssse3
+     ((V dq #f) (W dq #f)))
+    (15
+     58
+     #f
+     15
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     ssse3
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    JS
+    (15 136 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 120 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    CMOVB
+    (15
+     66
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    ANDPD
+    (15
+     84
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    PSRLQ
+    (15
+     211
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     211
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     115
+     102
+     #f
+     2
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     115
+     #f
+     #f
+     2
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    JP
+    (15 138 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 122 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
     SBB
     (#f
      131
@@ -5942,11 +3543,90 @@
      #f
      #f
      ((E b #f) (G b #f))))
-  (define-mnemonic
-    SQRTSD
+  (define-x64-mnemonic
+    FADD
+    (#f
+     220
+     #f
+     #f
+     0
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0)))
+    (#f 220 #f #f 0 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f #f 0 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    CVTSD2SI
     (15
-     81
+     45
      242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((G dqp #f) (W sd #f))))
+  (define-x64-mnemonic
+    JBE
+    (15 134 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 118 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    WRMSR
+    (15 48 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SETNO
+    (15 145 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    FCOS
+    (#f 217 #f 255 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FNSTSW
+    (#f 223 #f 224 4 #f #f #f #f #f #f ((AX #f 0)))
+    (#f 221 #f #f 7 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    MOVHPD
+    (15
+     23
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((M q #f) (V q #f)))
+    (15
+     22
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((V q #f) (M q #f))))
+  (define-x64-mnemonic
+    FLDPI
+    (#f 217 #f 235 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    HLT
+    (#f 244 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PCMPGTB
+    (15
+     100
+     102
      #f
      #f
      #f
@@ -5955,11 +3635,162 @@
      #f
      #f
      sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    CVTDQ2PD
+     ((V dq #f) (W dq #f)))
     (15
-     230
+     100
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    PSRLW
+    (15
+     209
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     209
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     113
+     102
+     #f
+     2
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     113
+     #f
+     #f
+     2
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    CMPXCHG
+    (15
+     177
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (15
+     176
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    PSADBW
+    (15
+     246
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     246
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    SETNBE
+    (15 151 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    FXCH
+    (#f 217 #f 201 1 #f #f #f #f #f #f ())
+    (#f 217 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    MOVNTPS
+    (15
+     43
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((M ps #f) (V ps #f))))
+  (define-x64-mnemonic
+    CWD
+    (#f 153 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FCOM2
+    (#f 220 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    JZ
+    (15 132 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 116 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    GETSEC
+    (15 55 #f #f #f #f #f #f #f #f smx ()))
+  (define-x64-mnemonic
+    SETBE
+    (15 150 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    RSQRTSS
+    (15
+     82
      243
      #f
      #f
@@ -5968,9 +3799,55 @@
      #f
      #f
      #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    PUNPCKHDQ
+    (15
+     106
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
      sse2
-     ((V pd #f) (W dq #f))))
-  (define-mnemonic
+     ((V dq #f) (W dq #f)))
+    (15
+     106
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FUCOMI
+    (#f
+     219
+     #f
+     #f
+     5
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    RDMSR
+    (15 50 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FCOMPP
+    (#f 222 #f 217 3 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
     ROUNDPS
     (15
      58
@@ -5984,10 +3861,865 @@
      #f
      sse41
      ((V ps #f) (W ps #f) (I b #f))))
-  (define-mnemonic
-    UNPCKLPD
+  (define-x64-mnemonic
+    FYL2X
+    (#f 217 #f 241 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SQRTSS
     (15
-     20
+     81
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    CMP
+    (#f
+     131
+     #f
+     #f
+     7
+     1
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (I bs #f)))
+    (#f
+     129
+     #f
+     #f
+     7
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (I vds #f)))
+    (#f
+     128
+     #f
+     #f
+     7
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     61
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     60
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     59
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     58
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f)))
+    (#f
+     57
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     56
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    PUNPCKLBW
+    (15
+     96
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     96
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    IRET
+    (#f 207 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SETO
+    (15 144 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    PADDUSB
+    (15
+     220
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     220
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    STR
+    (15 0 #f #f 1 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    PADDSW
+    (15
+     237
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     237
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PSHUFHW
+    (15
+     112
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    IN
+    (#f
+     237
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((eAX #f 0) (DX #f 2)))
+    (#f
+     236
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((AL #f 0) (DX #f 2)))
+    (#f
+     229
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     b
+     #f
+     ((eAX #f 0) (I b #f)))
+    (#f
+     228
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f))))
+  (define-x64-mnemonic
+    XCHG
+    (#f
+     144
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     ((Z vqp #f) (rAX #f 0)))
+    (#f
+     135
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     134
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f))))
+  (define-x64-mnemonic
+    XLAT
+    (#f 215 #f #f #f #f #f #f #f #f #f ((#f #f #f))))
+  (define-x64-mnemonic
+    PUNPCKLQDQ
+    (15
+     108
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f))))
+  (define-x64-mnemonic
+    PSUBQ
+    (15
+     251
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     251
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    SAL
+    (#f
+     211
+     #f
+     #f
+     6
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (CL #f 1)))
+    (#f
+     210
+     #f
+     #f
+     6
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (CL #f 1)))
+    (#f
+     209
+     #f
+     #f
+     6
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (#f #f #f)))
+    (#f
+     208
+     #f
+     #f
+     6
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (#f #f #f)))
+    (#f
+     193
+     #f
+     #f
+     6
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (#f
+     192
+     #f
+     #f
+     6
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f))))
+  (define-x64-mnemonic
+    FISTTP
+    (#f 223 #f #f 1 #f #f #f #t #f sse3 ((M wi #f)))
+    (#f 221 #f #f 1 #f #f #f #t #f sse3 ((M qi #f)))
+    (#f 219 #f #f 1 #f #f #f #t #f sse3 ((M di #f))))
+  (define-x64-mnemonic
+    STD
+    (#f 253 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CVTDQ2PD
+    (15
+     230
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W dq #f))))
+  (define-x64-mnemonic
+    CLI
+    (#f 250 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    TEST
+    (#f
+     247
+     #f
+     #f
+     1
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (I vqp #f)))
+    (#f
+     247
+     #f
+     #f
+     0
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (I vqp #f)))
+    (#f
+     246
+     #f
+     #f
+     1
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     246
+     #f
+     #f
+     0
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     169
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     168
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     133
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     132
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    FSTP
+    (#f 221 #f #f 3 #f #f #f #t #f #f ((EST #f #f)))
+    (#f 221 #f #f 3 #f #f #f #t #f #f ((M dr #f)))
+    (#f 219 #f #f 7 #f #f #f #t #f #f ((M er #f)))
+    (#f 217 #f #f 3 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    INVEPT
+    (15
+     56
+     102
+     128
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G q #f) (M dq #f)))
+    (15
+     56
+     102
+     128
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G d #f) (M dq #f))))
+  (define-x64-mnemonic
+    PUNPCKLWD
+    (15
+     97
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     97
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    VMPTRST
+    (15 199 #f #f 7 #f #f #f #t #f vmx ((M q #f))))
+  (define-x64-mnemonic
+    LSL
+    (15
+     3
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (M w #f))))
+  (define-x64-mnemonic
+    HADDPD
+    (15
+     124
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    PMULUDQ
+    (15
+     244
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     244
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    MOVAPS
+    (15
+     41
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((W ps #f) (V ps #f)))
+    (15
+     40
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    AND
+    (#f
+     131
+     #f
+     #f
+     4
+     1
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I bs #f)))
+    (#f
+     129
+     #f
+     #f
+     4
+     #f
+     #f
+     w
+     #t
+     v
+     #f
+     ((E vqp #f) (I vds #f)))
+    (#f
+     128
+     #f
+     #f
+     4
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     37
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     36
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     35
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     34
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f)))
+    (#f
+     33
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     32
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    SQRTPS
+    (15
+     81
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    SETNP
+    (15 155 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    FNINIT
+    (#f 219 #f 227 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    UCOMISD
+    (15
+     46
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    PCMPESTRM
+    (15
+     58
+     102
+     96
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse42
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    ANDNPD
+    (15
+     85
      102
      #f
      #f
@@ -5998,11 +4730,44 @@
      #f
      sse2
      ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    MOVDQ2Q
+  (define-x64-mnemonic
+    XSAVE
+    (15 174 #f #f 4 #f #f #f #t #f #f ((M #f #f))))
+  (define-x64-mnemonic
+    RETF
+    (#f 203 #f #f #f #f #f #f #f #f #f ())
+    (#f 202 #f #f #f #f #f #f #f w #f ((I w #f))))
+  (define-x64-mnemonic
+    PSUBSB
     (15
-     214
-     242
+     232
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     232
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    CVTPI2PD
+    (15
+     42
+     102
      #f
      #f
      #f
@@ -6011,8 +4776,342 @@
      #t
      #f
      sse2
-     ((P q #f) (U q #f))))
-  (define-mnemonic
+     ((V pd #f) (Q pi #f))))
+  (define-x64-mnemonic
+    FICOMP
+    (#f 222 #f #f 3 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 3 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    FRNDINT
+    (#f 217 #f 252 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MOVLPD
+    (15
+     19
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((M q #f) (V q #f)))
+    (15
+     18
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((V q #f) (M q #f))))
+  (define-x64-mnemonic
+    CVTPS2PI
+    (15
+     45
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P pi #f) (W psq #f))))
+  (define-x64-mnemonic
+    DPPS
+    (15
+     58
+     102
+     64
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    MOVSS
+    (15
+     17
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((W ss #f) (V ss #f)))
+    (15
+     16
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    CMPPD
+    (15
+     194
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f) (I b #f))))
+  (define-x64-mnemonic
+    PINSRW
+    (15
+     196
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((V dq #f) (R dqp #f) (I b #f)))
+    (15
+     196
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (R dqp #f) (I b #f))))
+  (define-x64-mnemonic
+    JNS
+    (15 137 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 121 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    FSTSW
+    (#f 223 155 224 4 #f #f #f #f #f #f ((AX #f 0)))
+    (#f 221 155 #f 7 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    CVTTPD2DQ
+    (15
+     230
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W pd #f))))
+  (define-x64-mnemonic
+    FCMOVNE
+    (#f
+     219
+     #f
+     #f
+     1
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    SETP
+    (15 154 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    BTS
+    (15
+     186
+     #f
+     #f
+     5
+     #f
+     #f
+     #f
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (15
+     171
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f))))
+  (define-x64-mnemonic
+    PADDD
+    (15
+     254
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     254
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FSUBR
+    (#f 220 #f #f 5 #f #f #f #t #f #f ((M dr #f)))
+    (#f
+     220
+     #f
+     #f
+     4
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0)))
+    (#f 216 #f #f 5 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    FIDIV
+    (#f 222 #f #f 6 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 6 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    FSTP9
+    (#f 223 #f #f 3 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    MOVSLDUP
+    (15
+     18
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V q #f) (W q #f))))
+  (define-x64-mnemonic
+    JLE
+    (15 142 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 126 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    SETNL
+    (15 157 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    MOVLHPS
+    (15
+     22
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V q #f) (U q #f))))
+  (define-x64-mnemonic
+    CVTSD2SS
+    (15
+     90
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V ss #f) (W sd #f))))
+  (define-x64-mnemonic
+    BSR
+    (15
+     189
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    FUCOM
+    (#f 221 #f 225 4 #f #f #f #f #f #f ())
+    (#f 221 #f #f 4 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    MOVSX
+    (15
+     191
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E w #f)))
+    (15
+     190
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G vqp #f) (E b #f))))
+  (define-x64-mnemonic
     ROL
     (#f
      211
@@ -6086,7 +5185,1358 @@
      b
      #f
      ((E b #f) (I b #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    CMOVZ
+    (15
+     68
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    PSRAW
+    (15
+     225
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     225
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     113
+     102
+     #f
+     4
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     113
+     #f
+     #f
+     4
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    FLDL2T
+    (#f 217 #f 233 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CVTSS2SD
+    (15
+     90
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W ss #f))))
+  (define-x64-mnemonic
+    SETNZ
+    (15 149 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    PSUBUSW
+    (15
+     217
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     217
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PMINSW
+    (15
+     234
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     234
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    SHLD
+    (15
+     165
+     #f
+     #f
+     #f
+     #f
+     0
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f) (CL #f 1)))
+    (15
+     164
+     #f
+     #f
+     #f
+     #f
+     0
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f) (I b #f))))
+  (define-x64-mnemonic
+    CMOVLE
+    (15
+     78
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    PSHUFLW
+    (15
+     112
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    RETN
+    (#f 195 #f #f #f #f #f #f #f #f #f ())
+    (#f 194 #f #f #f #f #f #f #f w #f ((I w #f))))
+  (define-x64-mnemonic
+    MASKMOVQ
+    (15
+     247
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (N q #f))))
+  (define-x64-mnemonic
+    MULSD
+    (15
+     89
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    MOVNTQ
+    (15
+     231
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((M q #f) (P q #f))))
+  (define-x64-mnemonic
+    FST
+    (#f 221 #f #f 2 #f #f #f #t #f #f ((EST #f #f)))
+    (#f 221 #f #f 2 #f #f #f #t #f #f ((M dr #f)))
+    (#f 217 #f #f 2 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    PCMPESTRI
+    (15
+     58
+     102
+     97
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse42
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    IMUL
+    (15
+     175
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f 247 #f #f 5 #f #f b #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 5 #f #f b #t #f #f ((E b #f)))
+    (#f
+     107
+     #f
+     #f
+     #f
+     1
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f) (I bs #f)))
+    (#f
+     105
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f) (I vds #f))))
+  (define-x64-mnemonic
+    MOVHLPS
+    (15
+     18
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V q #f) (U q #f))))
+  (define-x64-mnemonic
+    FDIVP
+    (#f 222 #f 249 7 #f #f #f #f #f #f ())
+    (#f
+     222
+     #f
+     #f
+     7
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
+    CPUID
+    (15 162 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    ENTER
+    (#f
+     200
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     ((I w #f) (I b #f))))
+  (define-x64-mnemonic
+    VERR
+    (15 0 #f #f 4 #f #f #f #t #f #f ((E w #f))))
+  (define-x64-mnemonic
+    CMPPS
+    (15
+     194
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f) (I b #f))))
+  (define-x64-mnemonic
+    FISUBR
+    (#f 222 #f #f 5 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 5 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    MOVDDUP
+    (15
+     18
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V q #f) (W q #f))))
+  (define-x64-mnemonic
+    PREFETCHT0
+    (15 24 #f #f 1 #f #f #f #t #f sse1 ((M b #f))))
+  (define-x64-mnemonic
+    FSAVE
+    (#f 221 155 #f 6 #f #f #f #t #f #f ((M st #f))))
+  (define-x64-mnemonic
+    MINSS
+    (15
+     93
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    LAHF
+    (#f 159 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FCMOVNB
+    (#f
+     219
+     #f
+     #f
+     0
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    XOR
+    (#f
+     131
+     #f
+     #f
+     6
+     1
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I bs #f)))
+    (#f
+     129
+     #f
+     #f
+     6
+     #f
+     #f
+     w
+     #t
+     v
+     #f
+     ((E vqp #f) (I vds #f)))
+    (#f
+     128
+     #f
+     #f
+     6
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     53
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     52
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     51
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     50
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f)))
+    (#f
+     49
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     48
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    INVVPID
+    (15
+     56
+     102
+     129
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G q #f) (M dq #f)))
+    (15
+     56
+     102
+     129
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G d #f) (M dq #f))))
+  (define-x64-mnemonic
+    BLENDPS
+    (15
+     58
+     102
+     12
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V ps #f) (W ps #f) (I b #f))))
+  (define-x64-mnemonic
+    PINSRB
+    (15
+     58
+     102
+     32
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((V dq #f) (M b #f) (I b #f))))
+  (define-x64-mnemonic
+    FPREM
+    (#f 217 #f 248 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PSUBB
+    (15
+     248
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     248
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    F2XM1
+    (#f 217 #f 240 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FUCOMPP
+    (#f 218 #f 233 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    VMREAD
+    (15
+     120
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((E q #f) (G q #f)))
+    (15
+     120
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((E d #f) (G d #f))))
+  (define-x64-mnemonic
+    MOVNTDQ
+    (15
+     231
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((M dq #f) (V dq #f))))
+  (define-x64-mnemonic
+    FXAM
+    (#f 217 #f 229 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FSUBRP
+    (#f 222 #f 225 4 #f #f #f #f #f #f ())
+    (#f
+     222
+     #f
+     #f
+     4
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
+    VMCALL
+    (15 1 #f 193 0 #f #f #f #f #f vmx ()))
+  (define-x64-mnemonic
+    MOVNTPD
+    (15
+     43
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((M pd #f) (V pd #f))))
+  (define-x64-mnemonic
+    ORPS
+    (15
+     86
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    NOP
+    (15 31 #f #f 0 #f #f #f #t #f #f ((E v #f)))
+    (15 13 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (#f 144 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SWAPGS
+    (15 1 #f 248 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FXRSTOR
+    (15 174 #f #f 1 #f #f #f #t #f #f ((M stx #f))))
+  (define-x64-mnemonic
+    RDTSC
+    (15 49 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PEXTRB
+    (15
+     58
+     102
+     20
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((M b #f) (V dq #f) (I b #f))))
+  (define-x64-mnemonic
+    FMULP
+    (#f 222 #f 201 1 #f #f #f #f #f #f ())
+    (#f
+     222
+     #f
+     #f
+     1
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
+    PSRAD
+    (15
+     226
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     226
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     114
+     102
+     #f
+     4
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     114
+     #f
+     #f
+     4
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    PAVGB
+    (15
+     224
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     224
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PUNPCKLDQ
+    (15
+     98
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     98
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    SETLE
+    (15 158 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    OR
+    (#f
+     131
+     #f
+     #f
+     1
+     1
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I bs #f)))
+    (#f
+     129
+     #f
+     #f
+     1
+     #f
+     #f
+     w
+     #t
+     v
+     #f
+     ((E vqp #f) (I vds #f)))
+    (#f
+     128
+     #f
+     #f
+     1
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     13
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     12
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     11
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     10
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f)))
+    (#f
+     9
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     8
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    MOVUPD
+    (15
+     17
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((W pd #f) (V pd #f)))
+    (15
+     16
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    MINPD
+    (15
+     93
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    MOVNTI
+    (15
+     195
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((M dqp #f) (G dqp #f))))
+  (define-x64-mnemonic
+    FSQRT
+    (#f 217 #f 250 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    XORPD
+    (15
+     87
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    JNP
+    (15 139 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 123 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    NOT
+    (#f 247 #f #f 2 #f #f w #t #f #f ((E vqp #f)))
+    (#f 246 #f #f 2 #f #f b #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    VMLAUNCH
+    (15 1 #f 194 0 #f #f #f #f #f vmx ()))
+  (define-x64-mnemonic
+    PSHUFW
+    (15
+     112
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f) (I b #f))))
+  (define-x64-mnemonic
+    CMOVP
+    (15
+     74
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    MOVDQA
+    (15
+     127
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((W dq #f) (V dq #f)))
+    (15
+     111
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f))))
+  (define-x64-mnemonic
+    VMPTRLD
+    (15 199 #f #f 6 #f #f #f #t #f vmx ((M q #f))))
+  (define-x64-mnemonic
+    FIMUL
+    (#f 222 #f #f 1 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 1 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    SYSEXIT
+    (15 53 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CMOVNO
+    (15
+     65
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    FLD1
+    (#f 217 #f 232 5 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PMULHUW
+    (15
+     228
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     228
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    LFS
+    (15
+     180
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (M ptp #f))))
+  (define-x64-mnemonic
+    FSTP8
+    (#f 223 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
+  (define-x64-mnemonic
+    SLDT
+    (15 0 #f #f 0 #f #f #f #t #f #f ((M w #f))))
+  (define-x64-mnemonic
+    PSUBSW
+    (15
+     233
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     233
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PAUSE
+    (#f 144 243 #f #f #f #f #f #f #f sse2 ()))
+  (define-x64-mnemonic
+    SUBPD
+    (15
+     92
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    UNPCKHPS
+    (15
+     21
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W q #f))))
+  (define-x64-mnemonic
+    CMOVO
+    (15
+     64
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    PSRLD
+    (15
+     210
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     210
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     114
+     102
+     #f
+     2
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     114
+     #f
+     #f
+     2
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    HSUBPD
+    (15
+     125
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    UCOMISS
+    (15
+     46
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    DIVSS
+    (15
+     94
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ss #f) (W ss #f))))
+  (define-x64-mnemonic
+    LOOPNZ
+    (#f 224 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    SYSCALL
+    (15 5 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CVTPS2DQ
+    (15
+     91
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W ps #f))))
+  (define-x64-mnemonic
     MOV
     (15
      35
@@ -6352,199 +6802,10 @@
      #f
      #f
      ((E b #f) (G b #f))))
-  (define-mnemonic
-    FCMOVE
-    (#f
-     218
-     #f
-     #f
-     1
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    VMCALL
-    (15 1 #f 193 0 #f #f #f #f #f vmx ()))
-  (define-mnemonic
-    CMOVNBE
+  (define-x64-mnemonic
+    SHUFPD
     (15
-     71
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    CMOVLE
-    (15
-     78
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    FYL2XP1
-    (#f 217 #f 249 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FSIN
-    (#f 217 #f 254 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FILD
-    (#f 223 #f #f 5 #f #f #f #t #f #f ((M qi #f)))
-    (#f 223 #f #f 0 #f #f #f #t #f #f ((M wi #f)))
-    (#f 219 #f #f 0 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    FCOMIP
-    (#f
-     223
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    PSHUFW
-    (15
-     112
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f) (I b #f))))
-  (define-mnemonic
-    FADD
-    (#f
-     220
-     #f
-     #f
-     0
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 220 #f #f 0 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f #f 0 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    JNP
-    (15 139 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 123 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    IN
-    (#f
-     237
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((eAX #f 0) (DX #f 2)))
-    (#f
-     236
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((AL #f 0) (DX #f 2)))
-    (#f
-     229
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     b
-     #f
-     ((eAX #f 0) (I b #f)))
-    (#f
-     228
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f))))
-  (define-mnemonic
-    IDIV
-    (#f 247 #f #f 7 #f #f b #t #f #f ((E vqp #f)))
-    (#f 246 #f #f 7 #f #f b #t #f #f ((E b #f))))
-  (define-mnemonic
-    SWAPGS
-    (15 1 #f 248 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCMOVB
-    (#f
-     218
-     #f
-     #f
-     0
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    MOVDDUP
-    (15
-     18
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse3
-     ((V q #f) (W q #f))))
-  (define-mnemonic
-    UNPCKHPD
-    (15
-     21
+     198
      102
      #f
      #f
@@ -6554,458 +6815,8 @@
      #f
      #f
      sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    ADDSS
-    (15
-     88
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    XRSTOR
-    (15 174 #f #f 5 #f #f #f #t #f #f ((M #f #f))))
-  (define-mnemonic
-    TEST
-    (#f
-     247
-     #f
-     #f
-     1
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (I vqp #f)))
-    (#f
-     247
-     #f
-     #f
-     0
-     #f
-     #f
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (I vqp #f)))
-    (#f
-     246
-     #f
-     #f
-     1
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     246
-     #f
-     #f
-     0
-     #f
-     #f
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     169
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     168
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     133
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     132
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    LEA
-    (#f
-     141
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (M #f #f))))
-  (define-mnemonic
-    MOVUPS
-    (15
-     17
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((W ps #f) (V ps #f)))
-    (15
-     16
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    CMOVNL
-    (15
-     77
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    PINSRW
-    (15
-     196
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((V dq #f) (R dqp #f) (I b #f)))
-    (15
-     196
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (R dqp #f) (I b #f))))
-  (define-mnemonic
-    MINPS
-    (15
-     93
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    CPUID
-    (15 162 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FCOM
-    (#f 220 #f #f 2 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f 209 2 #f #f #f #f #f #f ())
-    (#f 216 #f #f 2 #f #f #f #t #f #f ((ES sr #f))))
-  (define-mnemonic
-    FSTP
-    (#f 221 #f #f 3 #f #f #f #t #f #f ((EST #f #f)))
-    (#f 221 #f #f 3 #f #f #f #t #f #f ((M dr #f)))
-    (#f 219 #f #f 7 #f #f #f #t #f #f ((M er #f)))
-    (#f 217 #f #f 3 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    HLT
-    (#f 244 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVSD
-    (15
-     17
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((W sd #f) (V sd #f)))
-    (15
-     16
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    CVTSD2SI
-    (15
-     45
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((G dqp #f) (W sd #f))))
-  (define-mnemonic
-    PCMPESTRM
-    (15
-     58
-     102
-     96
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse42
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    PCMPISTRI
-    (15
-     58
-     102
-     99
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse42
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    RDTSC
-    (15 49 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CMOVNS
-    (15
-     73
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    SHLD
-    (15
-     165
-     #f
-     #f
-     #f
-     #f
-     0
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f) (CL #f 1)))
-    (15
-     164
-     #f
-     #f
-     #f
-     #f
-     0
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f) (I b #f))))
-  (define-mnemonic
-    PSUBD
-    (15
-     250
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     250
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    SUBSD
-    (15
-     92
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    RETN
-    (#f 195 #f #f #f #f #f #f #f #f #f ())
-    (#f 194 #f #f #f #f #f #f #f w #f ((I w #f))))
-  (define-mnemonic
-    ENTER
-    (#f
-     200
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     ((I w #f) (I b #f))))
-  (define-mnemonic
-    FISTTP
-    (#f 223 #f #f 1 #f #f #f #t #f sse3 ((M wi #f)))
-    (#f 221 #f #f 1 #f #f #f #t #f sse3 ((M qi #f)))
-    (#f 219 #f #f 1 #f #f #f #t #f sse3 ((M di #f))))
-  (define-mnemonic
-    MOVNTPS
-    (15
-     43
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((M ps #f) (V ps #f))))
-  (define-mnemonic
-    JNZ
-    (15 133 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 117 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FSINCOS
-    (#f 217 #f 251 7 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    MOVS
-    (#f
-     165
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((#f #f #f) (#f #f #f)))
-    (#f
-     164
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((#f #f #f) (#f #f #f))))
-  (define-mnemonic
-    WBINVD
-    (15 9 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
+     ((V pd #f) (W pd #f) (I b #f))))
+  (define-x64-mnemonic
     MULSS
     (15
      89
@@ -7019,1168 +6830,10 @@
      #f
      sse1
      ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    PSADBW
-    (15
-     246
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     246
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    BLENDPD
-    (15
-     58
-     102
-     13
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V pd #f) (W pd #f) (I b #f))))
-  (define-mnemonic
-    DPPD
-    (15
-     58
-     102
-     65
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse41
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    XORPS
-    (15
-     87
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    JB
-    (15 130 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 114 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    FISUB
-    (#f 222 #f #f 4 #f #f #f #t #f #f ((M wi #f)))
-    (#f 218 #f #f 4 #f #f #f #t #f #f ((M di #f))))
-  (define-mnemonic
-    FXCH4
-    (#f 221 #f #f 1 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    FCOMPP
-    (#f 222 #f 217 3 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    LOOPNZ
-    (#f 224 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    SQRTPS
-    (15
-     81
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    ADDPS
-    (15
-     88
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    CVTDQ2PS
-    (15
-     91
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V ps #f) (W dq #f))))
-  (define-mnemonic
-    FCOMI
-    (#f
-     219
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    PSUBSW
-    (15
-     233
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     233
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    JL
-    (15 140 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 124 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    OUT
-    (#f
-     239
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((DX #f 2) (eAX #f 0)))
-    (#f
-     238
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((DX #f 2) (AL #f 0)))
-    (#f
-     231
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((I b #f) (eAX #f 0)))
-    (#f
-     230
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((I b #f) (AL #f 0))))
-  (define-mnemonic
-    PEXTRW
-    (15
-     197
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (U dq #f) (I b #f)))
-    (15
-     197
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((G dqp #f) (N q #f) (I b #f)))
-    (15
-     58
-     102
-     21
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse41
-     ((M w #f) (V dq #f) (I b #f))))
-  (define-mnemonic
-    GETSEC
-    (15 55 #f #f #f #f #f #f #f #f smx ()))
-  (define-mnemonic
-    SUBPD
-    (15
-     92
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    DIVPS
-    (15
-     94
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    XADD
-    (15
-     193
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (15
-     192
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    FRSTOR
-    (#f 221 #f #f 4 #f #f #f #t #f #f ((M st #f))))
-  (define-mnemonic
-    FCOMP5
-    (#f 222 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    FXSAVE
-    (15 174 #f #f 0 #f #f #f #t #f #f ((M stx #f))))
-  (define-mnemonic
-    XOR
-    (#f
-     131
-     #f
-     #f
-     6
-     1
-     #f
-     w
-     #t
-     b
-     #f
-     ((E vqp #f) (I bs #f)))
-    (#f
-     129
-     #f
-     #f
-     6
-     #f
-     #f
-     w
-     #t
-     v
-     #f
-     ((E vqp #f) (I vds #f)))
-    (#f
-     128
-     #f
-     #f
-     6
-     #f
-     #f
-     b
-     #t
-     b
-     #f
-     ((E b #f) (I b #f)))
-    (#f
-     53
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     v
-     #f
-     ((rAX #f 0) (I vds #f)))
-    (#f
-     52
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     b
-     #f
-     ((AL #f 0) (I b #f)))
-    (#f
-     51
-     #f
-     #f
-     #f
-     #f
-     1
-     w
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f)))
-    (#f
-     50
-     #f
-     #f
-     #f
-     #f
-     1
-     b
-     #t
-     #f
-     #f
-     ((G b #f) (E b #f)))
-    (#f
-     49
-     #f
-     #f
-     #f
-     #f
-     0
-     w
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f)))
-    (#f
-     48
-     #f
-     #f
-     #f
-     #f
-     0
-     b
-     #t
-     #f
-     #f
-     ((E b #f) (G b #f))))
-  (define-mnemonic
-    PSHUFLW
-    (15
-     112
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f) (I b #f))))
-  (define-mnemonic
-    SETNS
-    (15 153 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    PSUBSB
-    (15
-     232
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     232
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MASKMOVQ
-    (15
-     247
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (N q #f))))
-  (define-mnemonic
-    UD
-    (15
-     185
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G #f #f) (E #f #f))))
-  (define-mnemonic
-    PSUBUSW
-    (15
-     217
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     217
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    CVTTPD2DQ
-    (15
-     230
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W pd #f))))
-  (define-mnemonic
-    ORPD
-    (15
-     86
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FUCOMPP
-    (#f 218 #f 233 5 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    POPCNT
-    (15
-     184
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((G vqp #f) (E vqp #f))))
-  (define-mnemonic
-    CMPSS
-    (15
-     194
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f) (I b #f))))
-  (define-mnemonic
-    MOVNTI
-    (15
-     195
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((M dqp #f) (G dqp #f))))
-  (define-mnemonic
-    MOVSS
-    (15
-     17
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((W ss #f) (V ss #f)))
-    (15
-     16
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    FMUL
-    (#f
-     220
-     #f
-     #f
-     1
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 220 #f #f 1 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f #f 1 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    MAXPD
-    (15
-     95
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V pd #f) (W pd #f))))
-  (define-mnemonic
-    FXAM
-    (#f 217 #f 229 4 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FSTSW
-    (#f 223 155 224 4 #f #f #f #f #f #f ((AX #f 0)))
-    (#f 221 155 #f 7 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    SUBSS
-    (15
-     92
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ss #f) (W ss #f))))
-  (define-mnemonic
-    F2XM1
-    (#f 217 #f 240 6 #f #f #f #f #f #f ()))
-  (define-mnemonic
-    RDMSR
-    (15 50 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    PSRLQ
-    (15
-     211
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     211
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f)))
-    (15
-     115
-     102
-     #f
-     2
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     115
-     #f
-     #f
-     2
-     #f
-     #f
-     #f
-     #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    FNSTCW
-    (#f 217 #f #f 7 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    MOVHPS
-    (15
-     23
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((M q #f) (V q #f)))
-    (15
-     22
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((V q #f) (M q #f))))
-  (define-mnemonic
-    JNO
-    (15 129 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 113 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    CVTTSD2SI
-    (15
-     44
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((G dqp #f) (W sd #f))))
-  (define-mnemonic
-    JNS
-    (15 137 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 121 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    JP
-    (15 138 #f #f #f #f #f #f #f v #f ((J vds #f)))
-    (#f 122 #f #f #f #f #f #f #f b #f ((J bs #f))))
-  (define-mnemonic
-    POR
-    (15
-     235
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     235
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    MULSD
-    (15
-     89
-     242
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V sd #f) (W sd #f))))
-  (define-mnemonic
-    ANDNPS
-    (15
-     85
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f))))
-  (define-mnemonic
-    PCMPGTD
-    (15
-     102
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q d #f))))
-  (define-mnemonic
-    FLDCW
-    (#f 217 #f #f 5 #f #f #f #t #f #f ((M w #f))))
-  (define-mnemonic
-    CVTTPS2DQ
-    (15
-     91
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W ps #f))))
-  (define-mnemonic
-    SAHF
-    (#f 158 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    CVTTPD2PI
-    (15
-     44
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((P pi #f) (W pd #f))))
-  (define-mnemonic
-    SETBE
-    (15 150 #f #f 0 #f #f #f #t #f #f ((E b #f))))
-  (define-mnemonic
-    CMPPS
-    (15
-     194
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V ps #f) (W ps #f) (I b #f))))
-  (define-mnemonic
-    FDIVP
-    (#f 222 #f 249 7 #f #f #f #f #f #f ())
-    (#f
-     222
-     #f
-     #f
-     7
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0))))
-  (define-mnemonic
-    PADDD
-    (15
-     254
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     254
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    CMPS
-    (#f
-     167
-     #f
-     #f
-     #f
-     #f
-     #f
-     w
-     #f
-     #f
-     #f
-     ((#f #f #f) (#f #f #f)))
-    (#f
-     166
-     #f
-     #f
-     #f
-     #f
-     #f
-     b
-     #f
-     #f
-     #f
-     ((#f #f #f) (#f #f #f))))
-  (define-mnemonic
-    FSTP8
-    (#f 223 #f #f 2 #f #f #f #t #f #f ((EST #f #f))))
-  (define-mnemonic
-    BTR
-    (15
-     186
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     b
-     #f
-     ((E vqp #f) (I b #f)))
-    (15
-     179
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f))))
-  (define-mnemonic
-    PMINSW
-    (15
-     234
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse1
-     ((V dq #f) (W dq #f)))
-    (15
-     234
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse1
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    PSUBB
-    (15
-     248
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     248
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f))))
-  (define-mnemonic
-    LEAVE
-    (#f 201 #f #f #f #f #f #f #f #f #f ()))
-  (define-mnemonic
-    FUCOMIP
-    (#f
-     223
-     #f
-     #f
-     5
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    MOVNTPD
-    (15
-     43
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     sse2
-     ((M pd #f) (V pd #f))))
-  (define-mnemonic
-    FCOMP
-    (#f 220 #f #f 3 #f #f #f #t #f #f ((M dr #f)))
-    (#f 216 #f 217 3 #f #f #f #f #f #f ())
-    (#f 216 #f #f 3 #f #f #f #t #f #f ((ES sr #f))))
-  (define-mnemonic
-    PSLLQ
-    (15
-     243
-     102
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     sse2
-     ((V dq #f) (W dq #f)))
-    (15
-     243
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     mmx
-     ((P q #f) (Q q #f)))
-    (15
-     115
-     102
-     #f
-     6
-     #f
-     #f
-     #f
-     #f
-     b
-     sse2
-     ((U dq #f) (I b #f)))
-    (15
-     115
-     #f
-     #f
-     6
-     #f
-     #f
-     #f
-     #t
-     b
-     mmx
-     ((N q #f) (I b #f))))
-  (define-mnemonic
-    VMPTRST
-    (15 199 #f #f 7 #f #f #f #t #f vmx ((M q #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    UD2
+    (15 11 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
     PSLLW
     (15
      241
@@ -8230,52 +6883,70 @@
      b
      mmx
      ((N q #f) (I b #f))))
-  (define-mnemonic
-    BTS
+  (define-x64-mnemonic
+    PUSH
+    (15 168 #f #f #f #f #f #f #f #f #f ((#f #f 5)))
+    (15 160 #f #f #f #f #f #f #f #f #f ((#f #f 4)))
+    (#f 255 #f #f 6 #f #f #f #t #f #f ((E vq #f)))
+    (#f 106 #f #f #f 1 #f #f #f b #f ((I bss #f)))
+    (#f 104 #f #f #f #f #f #f #f v #f ((I vs #f)))
+    (#f 80 #f #f #f #f #f #f #f #f #f ((Z vq #f))))
+  (define-x64-mnemonic
+    SETNB
+    (15 147 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    CLTS
+    (15 6 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SETNS
+    (15 153 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    INSERTPS
     (15
-     186
+     58
+     102
+     33
      #f
      #f
-     5
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V ps #f) (U ps #f) (I b #f))))
+  (define-x64-mnemonic
+    PMAXUB
+    (15
+     222
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     222
+     #f
+     #f
+     #f
      #f
      #f
      #f
      #t
-     b
      #f
-     ((E vqp #f) (I b #f)))
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FLDENV
+    (#f 217 #f #f 4 #f #f #f #t #f #f ((M e #f))))
+  (define-x64-mnemonic
+    MAXSD
     (15
-     171
-     #f
-     #f
-     #f
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((E vqp #f) (G vqp #f))))
-  (define-mnemonic
-    FSUBR
-    (#f 220 #f #f 5 #f #f #f #t #f #f ((M dr #f)))
-    (#f
-     220
-     #f
-     #f
-     4
-     #f
-     #f
-     #f
-     #t
-     #f
-     #f
-     ((EST #f #f) (ST #f 0)))
-    (#f 216 #f #f 5 #f #f #f #t #f #f ((M sr #f))))
-  (define-mnemonic
-    CMPSD
-    (15
-     194
+     95
      242
      #f
      #f
@@ -8285,11 +6956,47 @@
      #f
      #f
      sse2
-     ((V sd #f) (W sd #f) (I b #f))))
-  (define-mnemonic
-    PADDB
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    FPATAN
+    (#f 217 #f 243 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    JNO
+    (15 129 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 113 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    MOVS
+    (#f
+     165
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((#f #f #f) (#f #f #f)))
+    (#f
+     164
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((#f #f #f) (#f #f #f))))
+  (define-x64-mnemonic
+    FPTAN
+    (#f 217 #f 242 6 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PMULLW
     (15
-     252
+     213
      102
      #f
      #f
@@ -8301,7 +7008,7 @@
      sse2
      ((V dq #f) (W dq #f)))
     (15
-     252
+     213
      #f
      #f
      #f
@@ -8312,7 +7019,1303 @@
      #f
      mmx
      ((P q #f) (Q q #f))))
-  (define-mnemonic
+  (define-x64-mnemonic
+    SHUFPS
+    (15
+     198
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f) (I b #f))))
+  (define-x64-mnemonic
+    FLD
+    (#f 221 #f #f 0 #f #f #f #t #f #f ((M dr #f)))
+    (#f 219 #f #f 5 #f #f #f #t #f #f ((M er #f)))
+    (#f 217 #f #f 0 #f #f #f #t #f #f ((ES sr #f))))
+  (define-x64-mnemonic
+    WBINVD
+    (15 9 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    PEXTRW
+    (15
+     197
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((G dqp #f) (U dq #f) (I b #f)))
+    (15
+     197
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((G dqp #f) (N q #f) (I b #f)))
+    (15
+     58
+     102
+     21
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse41
+     ((M w #f) (V dq #f) (I b #f))))
+  (define-x64-mnemonic
+    PAVGW
+    (15
+     227
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     227
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FCMOVNBE
+    (#f
+     219
+     #f
+     #f
+     2
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    ANDNPS
+    (15
+     85
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    ADDSUBPS
+    (15
+     208
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    JL
+    (15 140 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 124 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    CMOVNB
+    (15
+     67
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    ANDPS
+    (15
+     84
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    PUNPCKHWD
+    (15
+     105
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     105
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    RCL
+    (#f
+     211
+     #f
+     #f
+     2
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (CL #f 1)))
+    (#f
+     210
+     #f
+     #f
+     2
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (CL #f 1)))
+    (#f
+     209
+     #f
+     #f
+     2
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (#f #f #f)))
+    (#f
+     208
+     #f
+     #f
+     2
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (#f #f #f)))
+    (#f
+     193
+     #f
+     #f
+     2
+     #f
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (#f
+     192
+     #f
+     #f
+     2
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f))))
+  (define-x64-mnemonic
+    PCMPGTD
+    (15
+     102
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q d #f))))
+  (define-x64-mnemonic
+    POR
+    (15
+     235
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     235
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    INS
+    (#f
+     109
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((#f #f #f) (DX #f 2)))
+    (#f
+     109
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((#f #f #f) (DX #f 2)))
+    (#f
+     108
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((#f #f #f) (DX #f 2))))
+  (define-x64-mnemonic
+    ADDPD
+    (15
+     88
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    HADDPS
+    (15
+     124
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse3
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    PMINUB
+    (15
+     218
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     218
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FUCOMIP
+    (#f
+     223
+     #f
+     #f
+     5
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((ST #f 0) (EST #f #f))))
+  (define-x64-mnemonic
+    LSS
+    (15
+     178
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (M ptp #f))))
+  (define-x64-mnemonic
+    BSF
+    (15
+     188
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    JNZ
+    (15 133 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 117 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    FBLD
+    (#f 223 #f #f 4 #f #f #f #t #f #f ((M bcd #f))))
+  (define-x64-mnemonic
+    STC
+    (#f 249 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    BTC
+    (15
+     187
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (15
+     186
+     #f
+     #f
+     7
+     #f
+     #f
+     #f
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f))))
+  (define-x64-mnemonic
+    FILD
+    (#f 223 #f #f 5 #f #f #f #t #f #f ((M qi #f)))
+    (#f 223 #f #f 0 #f #f #f #t #f #f ((M wi #f)))
+    (#f 219 #f #f 0 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    RCPPS
+    (15
+     83
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    JMPE
+    (15 184 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    VMCLEAR
+    (15 199 102 #f 6 #f #f #f #t #f vmx ((M q #f))))
+  (define-x64-mnemonic
+    PMAXSW
+    (15
+     238
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V dq #f) (W dq #f)))
+    (15
+     238
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    CMC
+    (#f 245 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    SQRTSD
+    (15
+     81
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    CVTPD2PI
+    (15
+     45
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((P pi #f) (W pd #f))))
+  (define-x64-mnemonic
+    PSLLQ
+    (15
+     243
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     243
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f)))
+    (15
+     115
+     102
+     #f
+     6
+     #f
+     #f
+     #f
+     #f
+     b
+     sse2
+     ((U dq #f) (I b #f)))
+    (15
+     115
+     #f
+     #f
+     6
+     #f
+     #f
+     #f
+     #t
+     b
+     mmx
+     ((N q #f) (I b #f))))
+  (define-x64-mnemonic
+    OUT
+    (#f
+     239
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((DX #f 2) (eAX #f 0)))
+    (#f
+     238
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((DX #f 2) (AL #f 0)))
+    (#f
+     231
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((I b #f) (eAX #f 0)))
+    (#f
+     230
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((I b #f) (AL #f 0))))
+  (define-x64-mnemonic
+    SETL
+    (15 156 #f #f 0 #f #f #f #t #f #f ((E b #f))))
+  (define-x64-mnemonic
+    INTO
+    (#f 206 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FICOM
+    (#f 222 #f #f 2 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 2 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    HINT_NOP
+    (15 31 #f #f 7 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 6 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 5 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 4 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 3 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 2 #f #f #f #t #f #f ((E v #f)))
+    (15 31 #f #f 1 #f #f #f #t #f #f ((E v #f)))
+    (15 30 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 29 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 28 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 27 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 26 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 25 #f #f #f #f #f #f #t #f #f ((E v #f)))
+    (15 24 #f #f 7 #f #f #f #t #f #f ((E v #f)))
+    (15 24 #f #f 6 #f #f #f #t #f #f ((E v #f)))
+    (15 24 #f #f 5 #f #f #f #t #f #f ((E v #f)))
+    (15 24 #f #f 4 #f #f #f #t #f #f ((E v #f))))
+  (define-x64-mnemonic
+    CMOVNLE
+    (15
+     79
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    ORPD
+    (15
+     86
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V pd #f) (W pd #f))))
+  (define-x64-mnemonic
+    MINSD
+    (15
+     93
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V sd #f) (W sd #f))))
+  (define-x64-mnemonic
+    PSUBD
+    (15
+     250
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     250
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    RCR
+    (#f
+     211
+     #f
+     #f
+     3
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (CL #f 1)))
+    (#f
+     210
+     #f
+     #f
+     3
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (CL #f 1)))
+    (#f
+     209
+     #f
+     #f
+     3
+     #f
+     #f
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (#f #f #f)))
+    (#f
+     208
+     #f
+     #f
+     3
+     #f
+     #f
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (#f #f #f)))
+    (#f
+     193
+     #f
+     #f
+     3
+     #f
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I b #f)))
+    (#f
+     192
+     #f
+     #f
+     3
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f))))
+  (define-x64-mnemonic
+    FIADD
+    (#f 222 #f #f 0 #f #f #f #t #f #f ((M wi #f)))
+    (#f 218 #f #f 0 #f #f #f #t #f #f ((M di #f))))
+  (define-x64-mnemonic
+    PBLENDW
+    (15
+     58
+     102
+     14
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse41
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    PSHUFD
+    (15
+     112
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
+    JMP
+    (#f 255 #f #f 4 #f #f #f #t #f #f ((E q #f)))
+    (#f 235 #f #f #f #f #f #f #f b #f ((J bs #f)))
+    (#f 233 #f #f #f #f #f #f #f v #f ((J vds #f))))
+  (define-x64-mnemonic
+    VMWRITE
+    (15
+     121
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G q #f) (E q #f)))
+    (15
+     121
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     vmx
+     ((G d #f) (E d #f))))
+  (define-x64-mnemonic
+    MOVDQ2Q
+    (15
+     214
+     242
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse2
+     ((P q #f) (U q #f))))
+  (define-x64-mnemonic
+    ADC
+    (#f
+     131
+     #f
+     #f
+     2
+     1
+     #f
+     w
+     #t
+     b
+     #f
+     ((E vqp #f) (I bs #f)))
+    (#f
+     129
+     #f
+     #f
+     2
+     #f
+     #f
+     w
+     #t
+     v
+     #f
+     ((E vqp #f) (I vds #f)))
+    (#f
+     128
+     #f
+     #f
+     2
+     #f
+     #f
+     b
+     #t
+     b
+     #f
+     ((E b #f) (I b #f)))
+    (#f
+     21
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     v
+     #f
+     ((rAX #f 0) (I vds #f)))
+    (#f
+     20
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     b
+     #f
+     ((AL #f 0) (I b #f)))
+    (#f
+     19
+     #f
+     #f
+     #f
+     #f
+     1
+     w
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f)))
+    (#f
+     18
+     #f
+     #f
+     #f
+     #f
+     1
+     b
+     #t
+     #f
+     #f
+     ((G b #f) (E b #f)))
+    (#f
+     17
+     #f
+     #f
+     #f
+     #f
+     0
+     w
+     #t
+     #f
+     #f
+     ((E vqp #f) (G vqp #f)))
+    (#f
+     16
+     #f
+     #f
+     #f
+     #f
+     0
+     b
+     #t
+     #f
+     #f
+     ((E b #f) (G b #f))))
+  (define-x64-mnemonic
+    FSUB
+    (#f
+     220
+     #f
+     #f
+     5
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0)))
+    (#f 220 #f #f 4 #f #f #f #t #f #f ((M dr #f)))
+    (#f 216 #f #f 4 #f #f #f #t #f #f ((M sr #f))))
+  (define-x64-mnemonic
+    CVTPI2PS
+    (15
+     42
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     sse1
+     ((V ps #f) (Q pi #f))))
+  (define-x64-mnemonic
+    PACKSSDW
+    (15
+     107
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     107
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    PUNPCKHQDQ
+    (15
+     109
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f))))
+  (define-x64-mnemonic
+    PCMPEQB
+    (15
+     116
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     116
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    OUTS
+    (#f
+     111
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((DX #f 2) (#f #f #f)))
+    (#f
+     111
+     #f
+     #f
+     #f
+     #f
+     #f
+     w
+     #f
+     #f
+     #f
+     ((DX #f 2) (#f #f #f)))
+    (#f
+     110
+     #f
+     #f
+     #f
+     #f
+     #f
+     b
+     #f
+     #f
+     #f
+     ((DX #f 2) (#f #f #f))))
+  (define-x64-mnemonic
+    JNB
+    (15 131 #f #f #f #f #f #f #f v #f ((J vds #f)))
+    (#f 115 #f #f #f #f #f #f #f b #f ((J bs #f))))
+  (define-x64-mnemonic
+    FSCALE
+    (#f 217 #f 253 7 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    FSUBP
+    (#f 222 #f 233 5 #f #f #f #f #f #f ())
+    (#f
+     222
+     #f
+     #f
+     5
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((EST #f #f) (ST #f 0))))
+  (define-x64-mnemonic
+    INT1
+    (#f 241 #f #f #f #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    CMOVL
+    (15
+     76
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     #f
+     ((G vqp #f) (E vqp #f))))
+  (define-x64-mnemonic
+    PACKUSWB
+    (15
+     103
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     103
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    LLDT
+    (15 0 #f #f 2 #f #f #f #t #f #f ((E w #f))))
+  (define-x64-mnemonic
+    EMMS
+    (15 119 #f #f #f #f #f #f #f #f mmx ()))
+  (define-x64-mnemonic
+    PUNPCKHBW
+    (15
+     104
+     102
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse2
+     ((V dq #f) (W dq #f)))
+    (15
+     104
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #t
+     #f
+     mmx
+     ((P q #f) (Q q #f))))
+  (define-x64-mnemonic
+    FNCLEX
+    (#f 219 #f 226 4 #f #f #f #f #f #f ()))
+  (define-x64-mnemonic
+    MOVUPS
+    (15
+     17
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((W ps #f) (V ps #f)))
+    (15
+     16
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse1
+     ((V ps #f) (W ps #f))))
+  (define-x64-mnemonic
+    PCMPISTRM
+    (15
+     58
+     102
+     98
+     #f
+     #f
+     #f
+     #f
+     #f
+     #f
+     sse42
+     ((V dq #f) (W dq #f) (I b #f))))
+  (define-x64-mnemonic
     FCMOVNU
     (#f
      219
@@ -8325,7 +8328,4 @@
      #t
      #f
      #f
-     ((ST #f 0) (EST #f #f))))
-  (define-mnemonic
-    INT1
-    (#f 241 #f #f #f #f #f #f #f #f #f ())))
+     ((ST #f 0) (EST #f #f)))))

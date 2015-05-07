@@ -57,7 +57,8 @@ exec sagittarius $0 "$@"
 	defs)))
      mnemonics)
     (hashtable-map cons store))
-
+  (define (define-name)
+    (string->symbol (format "define-~a-mnemonic" arch)))
   ;;(pp one-byte)
   ;;(pp two-bytes)
   (let ((name1 (apply lset-union eq? (collect-names one-byte)))
@@ -71,7 +72,7 @@ exec sagittarius $0 "$@"
     (pp `(library (sasm arch ,(string->symbol arch) mnemonics)
 	     (export ,@(lset-union eq? name1 name2))
 	     (import (sasm arch ,(string->symbol arch) framework))
-	   ,@(map (lambda (def) `(define-mnemonic . ,def)) 
+	   ,@(map (lambda (def) `(,(define-name) . ,def)) 
 		  (order-mnemonics (append one-byte two-bytes))))
 	out)))
 

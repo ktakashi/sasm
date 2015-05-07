@@ -32,7 +32,38 @@
 
 #!r6rs
 (library (sasm arch x64 framework)
-    (export define-mnemonic
+    (export define-x64-mnemonic
+	    define-mnemonic
 	    define-register
+	    register?
+	    register-bits
+	    register-name
+	    register-index
+	    register+displacement?
 	    &)
-    (import (sasm arch x86 framework)))
+    (import (rnrs) 
+	    (sasm arch x86 framework)
+	    (sasm arch conditions))
+
+  (define-syntax define-x64-mnemonic
+    (syntax-rules ()
+      ((_ name opcodes ...)
+       (define-mnemonic name x64 opcodes ...))))
+
+  ;; prefix thing
+  ;; opcodes is a list of generated opcode
+  (define (x64 mnemonic opcodes operands args)
+    ;; as far as i know, referencing address requires #x67 prefix
+    ;; for now that's enough
+    (cond ((memp register+displacement? args) =>
+	   (lambda (regs) 
+	     (let ((reg (car regs)))
+	       (cond ((= (register-bits reg) 64) '())
+		     ((= (register-bits reg) 32) '(#x67))
+		     (else ;; 16 or 8
+		      (mnemonic-error mnemonic mnemonic
+				      "impossible combination of address sizes"
+				      operands))))))
+	  (else '())))
+
+)
