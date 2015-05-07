@@ -1,6 +1,6 @@
 ;;; -*- mode:scheme; coding: utf-8; -*-
 ;;;
-;;; sasm/arch/x64/registers - x64 registers
+;;; sasm/arch/x86/registers - x86 registers
 ;;;  
 ;;;   Copyright (c) 2015  Takashi Kato  <ktakashi@ymail.com>
 ;;;   
@@ -28,33 +28,40 @@
 ;;;   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;  
 
-(library (sasm arch x64 registers)
-    (export RAX RCX RDX RBX RSP RBP RSI RDI R8 R9 R10 R11 R12 R13 R14 R15
-
-	    ;; from x86
-	    EAX ECX EDX EBX ESP EBP ESI EDI
+(library (sasm arch x86 registers)
+    (export EAX ECX EDX EBX ESP EBP ESI EDI
 	    AX CX DX BX SP BP SI DI
 	    AL CL DL BL AH CH DH BH
-	    ;; TODO more
+	    ;; TODO more (XMM and so)
 	    )
-    (import (sasm arch x64 framework)
-	    (sasm arch x86 registers))
+    (import (sasm arch x86 framework))
 
-  (define-register RAX reg 0 64)
-  (define-register RCX reg 1 64)
-  (define-register RDX reg 2 64)
-  (define-register RBX reg 3 64)
-  (define-register RSP reg 4 64)
-  (define-register RBP reg 5 64)
-  (define-register RSI reg 6 64)
-  (define-register RDI reg 7 64)
-  (define-register R8  reg 8 64)
-  (define-register R9  reg 9 64)
-  (define-register R10 reg 10 64)
-  (define-register R11 reg 11 64)
-  (define-register R12 reg 12 64)
-  (define-register R13 reg 13 64)
-  (define-register R14 reg 14 64)
-  (define-register R15 reg 15 64)
+  (define-register EAX reg 0 32)
+  (define-register ECX reg 1 32)
+  (define-register EDX reg 2 32)
+  (define-register EBX reg 3 32)
+  (define-register ESP reg 4 32)
+  (define-register EBP reg 5 32)
+  (define-register ESI reg 6 32)
+  (define-register EDI reg 7 32)
+
+  (define-register AX reg 0 16)
+  (define-register CX reg 1 16)
+  (define-register DX reg 2 16)
+  (define-register BX reg 3 16)
+  (define-register SP reg 4 16)
+  (define-register BP reg 5 16)
+  (define-register SI reg 6 16)
+  (define-register DI reg 7 16)
+
+  (define-register AL reg 0 8)
+  (define-register CL reg 1 8)
+  (define-register DL reg 2 8)
+  (define-register BL reg 3 8)
+  (define-register AH reg 4 8)
+  (define-register CH reg 5 8)
+  (define-register DH reg 6 8)
+  (define-register BH reg 7 8)
+
 
   )

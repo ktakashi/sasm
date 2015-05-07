@@ -29,6 +29,10 @@
 ;;;  
 
 #!r6rs
+;; references:
+;;  - Intel® 64 and IA-32 Architectures Software Developer’s Manual
+;;    Volume 2 (2A, 2B & 2C): Instruction Set Reference, A-Z
+;;  - http://www.c-jump.com/CIS77/CPU/x86/lecture.html
 (library (sasm arch x86 framework)
     (export define-mnemonic
 	    define-register
@@ -43,7 +47,8 @@
   (define-syntax define-mnemonic
     (syntax-rules ()
       ((_ "parse" name
-	  ((prefix op pf op2 extop ds modrm? immds ext (operands ...)) rest ...)
+	  ((prefix op pf op2 extop s d ds modrm? immds ext (operands ...))
+	   rest ...)
 	  (defs ...))
        (define-mnemonic "parse" name (rest ...)
 	 ;; (type applicable? encode)
@@ -54,6 +59,7 @@
 				op 
 				pf 
 				op2)
+			      s d
 			      'ds 
 			      extop
 			      modrm? 
@@ -168,7 +174,7 @@
    ;;  - bytevector: code
    ;;  - symbol: label (if there is otherwise #f)
    ;; opcodes contains u8 and #f including prefix to secondary opcode
-   (define (mnemonic-encode opcodes ds extop modrm? immds operands args)
+   (define (mnemonic-encode opcodes s d ds extop modrm? immds operands args)
      (define (parse-operands operands args)
        (let loop ((operands operands) 
 		  (args args) 
@@ -177,7 +183,7 @@
 	     (values (reverse rex))
 	     (let ((operand (car operands)) (arg (car args)))
 	       ;; TODO this might not be enough
-	       (cond ((register? arg)
+	       (cond ((and (register? arg) (= (register-bits arg) 64))
 		      (loop (cdr operands) (cdr args) (cons arg rex)))
 		     (else (loop (cdr operands) (cdr args) rex)))))))
      (define (compose-rex rex)
@@ -192,39 +198,48 @@
 			#x0 ;; TODO ModR/M.rm or SIB.base
 			)))
      (define (imm->disp imm)
-       (cond ((< imm #xFF)   #x40)
+       (cond ((zero? imm) #x00)
+	     ((< imm #xFF)   #x40)
 	     ((< imm #xFFFF) #x80)
 	     (else #x00))) ;; mod.disp32?
      (define (compose-modrm operands args extop) 
-       (define (find-modrm-arg operands args)
-	 (let loop ((operands operands) (args args))
-	   (case (caar operands)
-	     ((C D E ES EST G H M N P Q R S T) (car args))
-	     (else (loop (cdr operands) (cdr args))))))
-       (let ((arg (find-modrm-arg operands args)))
-	 (bitwise-ior (cond ((register+offset? arg)
-			     (imm->disp (register+offset-offset arg)))
-			    ((register? arg) #xc0)
+       ;; TODO can we assume the args has at least 2 elements?
+       ;; we also need to consider direction here. fxxk!!!
+       (let ((r/m (if (and d (= d 1)) (cadr args) (car args)))
+	     (reg (if (and d (= d 1)) (car args) (cadr args))))
+	 (bitwise-ior (cond ((register+offset? r/m)
+			     (imm->disp (register+offset-offset r/m)))
+			    ((register? r/m) #xc0)
+			    ((integer? reg) (imm->disp reg))
 			    ;; must be an integer, then
-			    (else (imm->disp arg)))
-		      (if extop (bitwise-arithmetic-shift-left extop 2) 0)
-		      (if (register? arg)
-			  (bitwise-and (register-index arg) #x03)
+			    (else (imm->disp r/m)))
+		      (cond (extop (bitwise-arithmetic-shift-left extop 2))
+			    ((register? reg)
+			     (bitwise-arithmetic-shift-left (register-index reg)
+							    3))
+			    (else 0))
+		      (if (register? r/m)
+			  (bitwise-and (register-index r/m) #x07)
 			  0
 			  ))))
      (define (compose-sib operands args) 1)
+     (define (->u8-list m count)
+       (let loop ((m m) (r '()) (i 0))
+	 (if (= i count)
+	     (reverse r)
+	     (loop (bitwise-arithmetic-shift-right m 8)
+		   (cons (bitwise-and m #xff) r)
+		   (+ i 1)))))
      (define (displacement operands args size)
+       ;; For now, assume the second argument has displacement
        (if size
-	   '()
+	   (let ((arg (cadr args)))
+	     (if (register+offset? arg)
+		 (->u8-list (register+offset-offset arg) size)
+		 ;; assume integer
+		 (->u8-list arg size)))
 	   '()))
      (define (immediate r64? operands args)
-       (define (->u8-list m count)
-	 (let loop ((m m) (r '()) (i 0))
-	   (if (= i count)
-	       (reverse r)
-	       (loop (bitwise-arithmetic-shift-right m 8)
-		     (cons (bitwise-and m #xff) r)
-		     (+ i 1)))))
        ;; I beleive there is only one immediate value in operands
        (let loop ((operands operands) (args args))
 	 (if (null? operands)
@@ -263,19 +278,19 @@
      ;; NB, we don't support 16 bit addressing mode.
      (define (sib/disp? modrm)
        (if modrm
-	   (let ((mod (bitwise-arithmetic-shift-right modrm 5))
+	   (let ((mod (bitwise-arithmetic-shift-right modrm 6))
 		 (rm  (bitwise-and modrm #x03)))
 	     (case mod
 	       ((#x00) (case rm 
 			 ((#x04) (values #t #f))
-			 ((#x05) (values #f #b10)) ;; disp32
+			 ((#x05) (values #f 4)) ;; disp32
 			 (else   (values #f #f))))
 	       ((#x01) (case rm
 			 ((#x04) (values #t #f))
-			 (else   (values #f #b00))))
+			 (else   (values #f 1))))
 	       ((#x02) (case rm 
 			 ((#x04) (values #t #f))
-			 (else   (values #f #b10))))
+			 (else   (values #f 4))))
 	       (else (values #f #f))))
 	   (values #f #f)))
      (define (find-disp-size modrm sib)

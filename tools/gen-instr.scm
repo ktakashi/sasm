@@ -215,8 +215,8 @@ exec sagittarius $0 "$@"
 	(let ((data-size (case (number/false 'op_size entry)
 			   ((0) 'b) ((1) 'w) (else #f)))
 	      (ext ((if-car-sxpath "/instr_ext/text()") entry))
-	      ;;(sign (sxml:attr entry 'sign-ext))
-	      ;;(direction (sxml:attr entry 'direction))
+	      (sign (sxml:attr entry 'sign-ext))
+	      (direction (sxml:attr entry 'direction))
 	      (pref ((if-car-sxpath "/pref/text()") entry))
 	      (extended-opcd ((if-car-sxpath "/opcd_ext/text()") entry))
 	      (secondary-opcd ((if-car-sxpath "/sec_opcd/text()") entry)))
@@ -225,6 +225,8 @@ exec sagittarius $0 "$@"
 		  (and pref (string->number pref 16))
 		  (and secondary-opcd (string->number secondary-opcd 16))
 		  (and extended-opcd (string->number extended-opcd 16))
+		  (and sign (string->number sign)) ; needed for ModR/M
+		  (and direction (string->number direction)) ; ditto
 		  data-size 
 		  modrm?
 		  ;; imm?
