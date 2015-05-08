@@ -16,20 +16,35 @@
 (test-error "ADD" mnemonic-error? (x64:ADD x64:RAX "invalid"))
 
 (define-syntax test-values
-  (syntax-rules ()
-    ((_ "tmp" name (e e* ...) (expected ...) (var ...) expr)
-     (test-values "tmp" name (e* ...) (expected ... e) (var ... t) expr))
-    ((_ "tmp" name () (expected ...) (var ...) expr)
-     (let-values (((var ...) expr))
-       (test-equal '(name expected) 'expected var)
-       ...))
+  (syntax-rules (or)
+    ((_ "tmp" name (e e* ...) (expected ...) (var ...) (var2 ... ) expr)
+     (test-values "tmp" name (e* ...) (expected ... e) 
+		  (var ... t) (var2 ... t2)
+		  expr))
+    ((_ "tmp" name () (expected ...) (var ...) (var2 ...) expr)
+     (let ((var #f) ...)
+       (test-assert 'expr
+		    (let-values (((var2 ...) expr))
+		      (set! var var2) ...
+		      #t))
+       (test-values "equal" name (expected ...) (var ...))))
+    ;; compare
+    ((_ "equal" name () ()) (values))
+    ((_ "equal" name ((or e ...) e* ...) (v1 v* ...))
+     (begin
+       (test-assert '(name (or e ...)) (member v1 '(e ...)))
+       (test-values "equal" name (e* ...) (v* ...))))
+    ((_ "equal" name (e e* ...) (v1 v* ...))
+     (begin
+       (test-equal '(name e) e v1)
+       (test-values "equal" name (e* ...) (v* ...))))
     ((_ (expected ...) expr)
      (test-values expr (expected ...) expr))
     ((_ name (expected ...) expr)
-     (test-values "tmp" name (expected ...) () () expr))))
+     (test-values "tmp" name (expected ...) () () () expr))))
 
 ;;(test-equal 'expr (expected ...) (let-values ((results expr)) results))
-(test-values (#vu8(#x0f #xa2) #f) (x64:CPUID))
+;;(test-values (#vu8(#x0f #xa2) #f) (x64:CPUID))
 
 (test-values (#vu8(#x48 #xb8 #x89 #x67 #x45 #x23 #x01 #x00 #x00 #x00) #f)
 	     (x64:MOV x64:RAX #x123456789))
@@ -37,8 +52,9 @@
 	     (x64:MOV x64:RBX #x123456789))
 
 ;; from http://www.c-jump.com/CIS77/CPU/x86/lecture.html
-(test-values (#vu8(#x00 #xc1) #f) (x64:ADD x64:CL x64:AL))
-(test-values (#vu8(#x01 #xc1) #f) (x64:ADD x64:ECX x64:EAX))
+(test-values ((or #vu8(#x00 #xc1) #vu8(#x02 #xc8)) #f)
+	     (x64:ADD x64:CL x64:AL))
+(test-values ((or #vu8(#x01 #xc1) #vu8(#x03 #xc8)) #f) (x64:ADD x64:ECX x64:EAX))
 ;; this is kinda irregular 
 ;; (probably I don't understand what displacement exactly...)
 ;; NB: NASM emits the same instruction so should be fine...
@@ -61,5 +77,6 @@
 	     (x64:ADD x64:RBP (x64:& x64:RAX 0 x64:R10 4)))
 
 ;; REX.R and REX.B
-(test-values (#vu8(#x4d #x01 #xca) #f) (x64:ADD x64:R10 x64:R9))
+(test-values ((or #vu8(#x4d #x01 #xca) #vu8(#x4d #x03 #xd1)) #f) 
+	     (x64:ADD x64:R10 x64:R9))
 (test-end)

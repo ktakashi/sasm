@@ -33,6 +33,9 @@ exec sagittarius $0 "$@"
 ;; extension-name ::= #f | symbol (e.g. sse1)
 ;; operands ::= (operand ...)
 ;; operand ::= (address type number)
+(define *immediate-size*
+  '((b . 1) (bs . 1) (bss . 1) (w . 2) (d . 4) (ds . 4) (q . 8)
+    (v . 4) (vs . 4) (vds . 4) (vqp . 8)))
 (define (emit-instr out arch one-byte two-bytes)
   (define (collect-names defs)
     (map (match-lambda
@@ -43,6 +46,23 @@ exec sagittarius $0 "$@"
   ;; the result is (name (prefix opcode rest ...) ...))
   (define (order-mnemonics mnemonics)
     (define store (make-eq-hashtable))
+    (define (compare-by-size a b)
+      (let* ((a-op (list-ref a 11))
+	     (b-op (list-ref b 11))
+	     (c (compare (length a-op) (length b-op))))
+	(cond ((zero? c) 
+	       (let ((ai (assq 'I a-op))
+		     (bi (assq 'I b-op)))
+		 (if (and ai bi)
+		     (let ((at (assq (cadr ai) *immediate-size*))
+			   (bt (assq (cadr bi) *immediate-size*)))
+		       (< (cdr at) (cdr bt)))
+		     ;; TODO
+		     #t)))
+	      ((positive? c) #f)
+	      (else #t))))
+    (define (sort-cons k v)
+      (cons k (list-sort compare-by-size v)))
     (for-each 
      (match-lambda
       ((prefix op ((defs ...) ...)) 
