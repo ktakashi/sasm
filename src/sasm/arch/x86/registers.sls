@@ -28,6 +28,7 @@
 ;;;   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ;;;  
 
+#!r6rs
 (library (sasm arch x86 registers)
     (export EAX ECX EDX EBX ESP EBP ESI EDI
 	    AX CX DX BX SP BP SI DI
