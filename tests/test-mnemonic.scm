@@ -43,8 +43,7 @@
     ((_ name (expected ...) expr)
      (test-values "tmp" name (expected ...) () () () expr))))
 
-;;(test-equal 'expr (expected ...) (let-values ((results expr)) results))
-;;(test-values (#vu8(#x0f #xa2) #f) (x64:CPUID))
+(test-values (#vu8(#x0f #xa2) #f) (x64:CPUID))
 
 (test-values (#vu8(#x48 #xb8 #x89 #x67 #x45 #x23 #x01 #x00 #x00 #x00) #f)
 	     (x64:MOV x64:RAX #x123456789))
@@ -79,4 +78,13 @@
 ;; REX.R and REX.B
 (test-values ((or #vu8(#x4d #x01 #xca) #vu8(#x4d #x03 #xd1)) #f) 
 	     (x64:ADD x64:R10 x64:R9))
+
+;; RAX ADD
+(test-values (#vu8(#x48 #x83 #xc0 #x10) #f) (x64:ADD x64:RAX #x10))
+;; no REX.W or #x67 addressing prefix 32bit register thing
+(test-values (#vu8(#x83 #xc0 #x10) #f) (x64:ADD x64:EAX #x10))
+
+;; CALL
+(test-values (#vu8(#xff #xd0) #f) (x64:CALL x64:RAX))
+
 (test-end)
