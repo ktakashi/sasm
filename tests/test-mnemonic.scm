@@ -64,6 +64,9 @@
 (test-values (#vu8(#x67 #x03 #x9d #x78 #x56 #x34 #x12) #f)
 	     (x64:ADD x64:EBX (x64:& x64:EBP #x12345678)))
 
+(test-values (#vu8(#x03 #x14 #x25 #x10 #x00 #x00 #x00) #f)
+	     (x64:ADD x64:EDX (x64:& #x10)))
+
 (test-values (#vu8(#x67 #x03 #x0c #xbb) #f) 
 	     (x64:ADD x64:ECX (x64:& x64:EBX 0 x64:EDI 4)))
 ;; this is an error

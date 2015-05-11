@@ -184,16 +184,19 @@
 	   (cond ((register? arg) (<= (register-bits arg) 32))
 		 ;; depending on the other operand (register) ...
 		 ((integer? arg) (<= #x-80000000 arg #x7FFFFFFF))
+		 ((symbol? arg))  ;; near jump/call
 		 (else #f)))
 	  ((vqp) ;; FIXME
 	   (cond ((register? arg))
 		 ;; depending on the other operand (register) ...
 		 ((integer? arg)) ;; FIXME
+		 ((address? arg)) ;; address?
 		 (else #f)))
 	  ((q) 
 	   ;; TODO address thing
 	   (cond ((register? arg) (= (register-bits arg) 64))
 		 ((integer? arg) (<= arg #xFFFFFFFFFFFFFFFF))
+		 ((symbol? arg)) ;; far label
 		 (else #f)))
 	  ((#f) #t) ;; no type specified thus a specific register.
 	  (else #f)))
@@ -221,6 +224,8 @@
 		(> (register-bits arg) 8) ;; more than 8bit
 		(= (register-index arg) 0)))
 	  ((I) (integer? arg)) ;; immediate
+	  ;; label (no body can know relative offset from assembly!)
+	  ((J) (symbol? arg))
 	  (else #f)))
       (and (check-address operand arg)
 	   (check-type operand arg)))
@@ -297,6 +302,7 @@
 			     (register+displacement-displacement r/m)))
 			   ((register? r/m) #xc0)
 			   ((integer? reg) (imm->disp reg))
+			   ((address? r/m) #x00) ;; addressing mode
 			   ;; must be an integer, then
 			   (else (imm->disp r/m)))
 		     (cond (extop (bitwise-arithmetic-shift-left extop 3))
@@ -310,27 +316,39 @@
 			    #x04)
 			   ((register? r/m)
 			    (bitwise-and (register-index r/m) #x07))
+			   ((address? r/m) #x04) ;; esp?
 			   (else 0)))))
 
     (define (compose-sib operands args) 
-      (let* ((r/m (if (and d (= d 1)) (cadr args) (car args)))
-	     (offset (register+displacement-offset r/m))
-	     (reg (car offset))
-	     (multiplier (cdr offset)))
-	(bitwise-ior (case multiplier
-		       ((1) #x00)
-		       ((2) #x40)
-		       ((4) #x80)
-		       ((8) #xc0)
-		       (else (mnemonic-error 'SIB 'SIB
-					     "invalid multiplier for SIB"
-					     multiplier)))
-		     (bitwise-arithmetic-shift-left
-		      (bitwise-and (register-index reg) #x07) 3)
-		     (bitwise-and (register-index r/m) #x07))))
+      (let ((r/m (if (and d (= d 1)) (cadr args) (car args))))
+	(if (register+displacement? r/m)
+	    (let* ((offset (register+displacement-offset r/m))
+		   (reg (car offset))
+		   (multiplier (cdr offset)))
+	      (bitwise-ior (case multiplier
+			     ((1) #x00)
+			     ((2) #x40)
+			     ((4) #x80)
+			     ((8) #xc0)
+			     (else (mnemonic-error 'SIB 'SIB
+						   "invalid multiplier for SIB"
+						   multiplier)))
+			   (bitwise-arithmetic-shift-left
+			    (bitwise-and (register-index reg) #x07) 3)
+			   (bitwise-and (register-index r/m) #x07)))
+	    ;; address
+	    ;; scale = 00
+	    ;; index = 100 (invalid)
+	    ;; base  = 101 (displacement only)
+	    #b00100101
+	    )))
 
     (define (->u8-list m count)
-      (let loop ((m m) (r '()) (i 0))
+      (define (ensure-integer m)
+	(if (address? m)
+	    (address-address m)
+	    m))
+      (let loop ((m (ensure-integer m)) (r '()) (i 0))
 	(if (= i count)
 	    (reverse r)
 	    (loop (bitwise-arithmetic-shift-right m 8)
@@ -365,8 +383,6 @@
 		      (->u8-list (car args) 4)))
 		 (else (assert #f))))
 	      (else (loop (cdr operands) (cdr args)))))))
-
-    (define (find-label operands args) #f)
 
     (define (merge-reg-if-needed opcodes operands args)
       (define (last-pair p)
@@ -410,12 +426,19 @@
 	   (case (bitwise-and sib #x07)
 	     ((#x05)
 	      (case (bitwise-arithmetic-shift-right modrm 6)
-		((#x00) #b10)
-		((#x01) #b00)
-		((#x02) #b10)
+		((#x00) 4)
+		((#x01) 1)
+		((#x02) 4)
 		(else #f)))
 	     (else #f))))
-    
+
+    (define (find-label operands args) 
+      ;; for now very simple
+      (let ((labels (filter symbol? args)))
+	;; I don't think there would multiple labels but for
+	;; my convenience.
+	(and (not (null? labels))
+	     labels)))
     (let ((rex (parse-operands operands args))
 	  (opcode (merge-reg-if-needed (filter values opcodes) operands args))
 	  (modrm (and modrm? (compose-modrm operands args extop))))
