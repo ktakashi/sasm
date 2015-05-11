@@ -80,7 +80,7 @@
      (let ((s (sasm-output-create-section! output (cadr expr))))
        (for-each (lambda (e) (sasm-assemble1 output s e)) (cddr expr))))
     ((label) ;; TODO
-     )
+     #f)
     ;; TODO more special case (e.g. macro)
     (else
      (cond ((lookup-mnemonic (car expr)) =>
@@ -89,7 +89,7 @@
 			    (apply m (map immeidate/register (cdr expr)))))
 		(when label?
 		  ;; TODO handle label
-		  )
+		  #f)
 		(sasm-section-push-code! (ensure-section section) code))))
 	   (else
 	    (assembler-error 'sasm-assemble1 expr 

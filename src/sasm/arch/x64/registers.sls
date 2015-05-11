@@ -62,9 +62,11 @@
 	 (with-syntax ((sname (datum->syntax #'k (->small #'name))))
 	   #'(begin
 	       (define-register name type nr bits)
-	       (hashtable-set! *register-table* 'name name)
-	       (hashtable-set! *register-table* 'sname name)))))))
-
+	       (define dummy
+		 (begin
+		   (hashtable-set! *register-table* 'name name)
+		   (hashtable-set! *register-table* 'sname name)))))))))
+      
   (define-x64-register RAX reg 0 64)
   (define-x64-register RCX reg 1 64)
   (define-x64-register RDX reg 2 64)

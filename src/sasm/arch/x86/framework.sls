@@ -43,8 +43,11 @@
 	    register-name
 	    register-index
 	    register+displacement?
+
+	    make-far-address ;; for x64 framework
 	    ;; addressing
 	    &
+	    far
 	    )
     (import (rnrs)
 	    (rnrs mutable-pairs)
@@ -118,6 +121,17 @@
 
   (define-record-type address
     (fields address))
+  (define-record-type far-address
+    (fields type
+	    label) ;; v/q. v: 32 bit, q: 64 bit
+    (parent address)
+    (protocol
+     (lambda (p)
+       (lambda (type label)
+	 ((p 0) type label)))))
+
+  ;; this is for 32 bit
+  (define (far label) (make-far-address 'v label))
 
   (define & 
     (case-lambda 
@@ -192,6 +206,7 @@
 		 ((integer? arg)) ;; FIXME
 		 ((address? arg)) ;; address?
 		 (else #f)))
+	  ;; ((v) (address? arg)) ;; TODO support this properly
 	  ((q) 
 	   ;; TODO address thing
 	   (cond ((register? arg) (= (register-bits arg) 64))
@@ -317,7 +332,10 @@
 			    #x04)
 			   ((register? r/m)
 			    (bitwise-and (register-index r/m) #x07))
-			   ((address? r/m) #x04) ;; esp?
+			   ((address? r/m) 
+			    (if (prefixer 'addressing #f #f) ;; need rip
+				#x04   ;; disp+rip (64 bit)
+				#x05)) ;; displacement only
 			   (else 0)))))
 
     (define (compose-sib operands args) 
@@ -384,6 +402,12 @@
 		      (->u8-list (car args) 8)
 		      (->u8-list (car args) 4)))
 		 (else (assert #f))))
+	      ((J)
+	       ;; near jump/call will be fixup by bin format
+	       (case (cadar operands)
+		 ((vds) '(0 0 0 0))
+		 ((q)   '(0 0 0 0 0 0 0 0))
+		 (else (assert #f))))
 	      (else (loop (cdr operands) (cdr args)))))))
 
     (define (merge-reg-if-needed opcodes operands args)
@@ -436,7 +460,12 @@
 
     (define (find-label operands args) 
       ;; for now very simple
-      (let ((labels (filter symbol? args)))
+      (let ((labels (filter values
+			    (map (lambda (s) 
+				   (or (and (symbol? s) s)
+				       (and (far-address? s)
+					    (far-address-label s))))
+				 args))))
 	;; I don't think there would multiple labels but for
 	;; my convenience.
 	(and (not (null? labels))

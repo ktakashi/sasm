@@ -40,9 +40,11 @@
 	    register-name
 	    register-index
 	    register+displacement?
-	    &)
+	    make-far-address ;; maybe shouldn't export this?
+	    &
+	    far)
     (import (rnrs) 
-	    (sasm arch x86 framework)
+	    (except (sasm arch x86 framework) far)
 	    (sasm arch conditions))
 
   (define-syntax define-x64-mnemonic
@@ -52,18 +54,24 @@
 
   ;; prefix thing
   ;; opcodes is a list of generated opcode
+  ;; FIXME this is getting messier.
   (define (x64 mnemonic opcodes operands args)
-    ;; as far as i know, referencing address requires #x67 prefix
-    ;; for now that's enough
-    (cond ((memp register+displacement? args) =>
-	   (lambda (regs) 
-	     (let ((reg (car regs)))
-	       (cond ((= (register-bits reg) 64) '())
-		     ((= (register-bits reg) 32) '(#x67))
-		     (else ;; 16 or 8
-		      (mnemonic-error mnemonic mnemonic
-				      "impossible combination of address sizes"
-				      operands))))))
-	  (else '())))
+    (if (eq? opcodes 'addressing) ;; kinda ugly
+	#t
+	;; as far as i know, referencing address requires #x67 prefix
+	;; for now that's enough
+	(cond ((memp register+displacement? args) =>
+	       (lambda (regs) 
+		 (let ((reg (car regs)))
+		   (cond ((= (register-bits reg) 64) '())
+			 ((= (register-bits reg) 32) '(#x67))
+			 (else ;; 16 or 8
+			  (mnemonic-error mnemonic mnemonic
+				  "impossible combination of address sizes"
+				  operands))))))
+	      (else '()))))
+
+  (define (far label)
+    (make-far-address 'q label))
 
 )

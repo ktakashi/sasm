@@ -93,4 +93,7 @@
 (test-values (#vu8(#xff #x14 #x25 #x10 #x00 #x00 #x00) #f)
 	     (x64:CALL (x64:& #x10)))
 
+(test-values (#vu8(#xe8 #x00 #x00 #x00 #x00) '(bar))
+	     (x64:CALL 'bar))
+
 (test-end)
