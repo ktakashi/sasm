@@ -196,6 +196,7 @@
 	   ;; TODO address thing
 	   (cond ((register? arg) (= (register-bits arg) 64))
 		 ((integer? arg) (<= arg #xFFFFFFFFFFFFFFFF))
+		 ((address? arg))
 		 ((symbol? arg)) ;; far label
 		 (else #f)))
 	  ((#f) #t) ;; no type specified thus a specific register.
@@ -358,11 +359,12 @@
     (define (displacement operands args size)
       ;; For now, assume the second argument has displacement
       (if size
-	  (let ((arg (cadr args)))
-	    (if (register+displacement? arg)
-		(->u8-list (register+displacement-displacement arg) size)
-		;; assume integer
-		(->u8-list arg size)))
+	  (let ((arg (if (null? (cdr args)) (car args) (cadr args))))
+	    (cond ((register+displacement? arg)
+		   (->u8-list (register+displacement-displacement arg) size))
+		  ((address? arg) (->u8-list (address-address arg) size))
+		  ;; assume integer
+		  (else (->u8-list arg size))))
 	  '()))
 
     (define (immediate r64? operands args)

@@ -90,4 +90,7 @@
 ;; CALL
 (test-values (#vu8(#xff #xd0) #f) (x64:CALL x64:RAX))
 
+(test-values (#vu8(#xff #x14 #x25 #x10 #x00 #x00 #x00) #f)
+	     (x64:CALL (x64:& #x10)))
+
 (test-end)
