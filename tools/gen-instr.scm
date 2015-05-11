@@ -89,12 +89,25 @@ exec sagittarius $0 "$@"
     (newline out)
     (display "#!r6rs" out)
     (newline out)
-    (pp `(library (sasm arch ,(string->symbol arch) mnemonics)
-	     (export ,@(lset-union eq? name1 name2))
-	     (import (sasm arch ,(string->symbol arch) framework))
-	   ,@(map (lambda (def) `(,(define-name) . ,def)) 
-		  (order-mnemonics (append one-byte two-bytes))))
-	out)))
+    (let ((names (lset-union eq? name1 name2)))
+      (pp `(library (sasm arch ,(string->symbol arch) mnemonics)
+	       (export ,@names
+		       lookup-mnemonic)
+	       (import (rnrs) (sasm arch ,(string->symbol arch) framework))
+	     ,@(map (lambda (def) `(,(define-name) . ,def)) 
+		    (order-mnemonics (append one-byte two-bytes)))
+	     (define *mnemonic-table* (make-eq-hashtable))
+	     (define (lookup-mnemonic name) 
+	       (hashtable-ref *mnemonic-table* name #f))
+	     ,@(map (lambda (name)
+		      (let ((sname (string->symbol 
+				    (string-downcase (symbol->string name)))))
+			`(begin
+			   (hashtable-set! *mnemonic-table* ',name ,name)
+			   (hashtable-set! *mnemonic-table* ',sname ,name))))
+		    names)
+	     )
+	  out))))
 
 ;; from x86reference.dtd
 ;;  processor codes:
