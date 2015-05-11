@@ -37,25 +37,49 @@
 	    AX CX DX BX SP BP SI DI
 	    AL CL DL BL AH CH DH BH
 	    ;; TODO more
-	    )
-    (import (sasm arch x64 framework)
-	    (sasm arch x86 registers))
 
-  (define-register RAX reg 0 64)
-  (define-register RCX reg 1 64)
-  (define-register RDX reg 2 64)
-  (define-register RBX reg 3 64)
-  (define-register RSP reg 4 64)
-  (define-register RBP reg 5 64)
-  (define-register RSI reg 6 64)
-  (define-register RDI reg 7 64)
-  (define-register R8  reg 8 64)
-  (define-register R9  reg 9 64)
-  (define-register R10 reg 10 64)
-  (define-register R11 reg 11 64)
-  (define-register R12 reg 12 64)
-  (define-register R13 reg 13 64)
-  (define-register R14 reg 14 64)
-  (define-register R15 reg 15 64)
+
+	    lookup-register
+	    )
+    (import (rnrs)
+	    (sasm arch x64 framework)
+	    (rename (sasm arch x86 registers)
+		    (lookup-register x86:lookup-register)))
+
+  (define *register-table* (make-eq-hashtable))
+
+  (define (lookup-register name)
+    (cond ((hashtable-ref *register-table* name #f))
+	  (else (x86:lookup-register name))))
+
+  (define-syntax define-x64-register
+    (lambda (x)
+      (define (->small name)
+	(string->symbol 
+	 (string-downcase (symbol->string (syntax->datum name)))))
+      (syntax-case x ()
+	((k name type nr bits)
+	 (with-syntax ((sname (datum->syntax #'k (->small #'name))))
+	   #'(begin
+	       (define-register name type nr bits)
+	       (hashtable-set! *register-table* 'name name)
+	       (hashtable-set! *register-table* 'sname name)))))))
+
+  (define-x64-register RAX reg 0 64)
+  (define-x64-register RCX reg 1 64)
+  (define-x64-register RDX reg 2 64)
+  (define-x64-register RBX reg 3 64)
+  (define-x64-register RSP reg 4 64)
+  (define-x64-register RBP reg 5 64)
+  (define-x64-register RSI reg 6 64)
+  (define-x64-register RDI reg 7 64)
+  (define-x64-register R8  reg 8 64)
+  (define-x64-register R9  reg 9 64)
+  (define-x64-register R10 reg 10 64)
+  (define-x64-register R11 reg 11 64)
+  (define-x64-register R12 reg 12 64)
+  (define-x64-register R13 reg 13 64)
+  (define-x64-register R14 reg 14 64)
+  (define-x64-register R15 reg 15 64)
 
   )

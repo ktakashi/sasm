@@ -34,35 +34,54 @@
 	    AX CX DX BX SP BP SI DI
 	    AL CL DL BL AH CH DH BH
 	    ;; TODO more (XMM and so)
+
+	    lookup-register
 	    )
-    (import (sasm arch x86 framework))
+    (import (rnrs) (sasm arch x86 framework))
 
-  (define-register EAX reg 0 32)
-  (define-register ECX reg 1 32)
-  (define-register EDX reg 2 32)
-  (define-register EBX reg 3 32)
-  (define-register ESP reg 4 32)
-  (define-register EBP reg 5 32)
-  (define-register ESI reg 6 32)
-  (define-register EDI reg 7 32)
+  (define *register-table* (make-eq-hashtable))
 
-  (define-register AX reg 0 16)
-  (define-register CX reg 1 16)
-  (define-register DX reg 2 16)
-  (define-register BX reg 3 16)
-  (define-register SP reg 4 16)
-  (define-register BP reg 5 16)
-  (define-register SI reg 6 16)
-  (define-register DI reg 7 16)
+  (define (lookup-register name) (hashtable-ref *register-table* name #f))
 
-  (define-register AL reg 0 8)
-  (define-register CL reg 1 8)
-  (define-register DL reg 2 8)
-  (define-register BL reg 3 8)
-  (define-register AH reg 4 8)
-  (define-register CH reg 5 8)
-  (define-register DH reg 6 8)
-  (define-register BH reg 7 8)
+  (define-syntax define-x86-register
+    (lambda (x)
+      (define (->small name)
+	(string->symbol 
+	 (string-downcase (symbol->string (syntax->datum name)))))
+      (syntax-case x ()
+	((k name type nr bits)
+	 (with-syntax ((sname (datum->syntax #'k (->small #'name))))
+	   #'(begin
+	       (define-register name type nr bits)
+	       (hashtable-set! *register-table* 'name name)
+	       (hashtable-set! *register-table* 'sname name)))))))
+
+  (define-x86-register EAX reg 0 32)
+  (define-x86-register ECX reg 1 32)
+  (define-x86-register EDX reg 2 32)
+  (define-x86-register EBX reg 3 32)
+  (define-x86-register ESP reg 4 32)
+  (define-x86-register EBP reg 5 32)
+  (define-x86-register ESI reg 6 32)
+  (define-x86-register EDI reg 7 32)
+
+  (define-x86-register AX reg 0 16)
+  (define-x86-register CX reg 1 16)
+  (define-x86-register DX reg 2 16)
+  (define-x86-register BX reg 3 16)
+  (define-x86-register SP reg 4 16)
+  (define-x86-register BP reg 5 16)
+  (define-x86-register SI reg 6 16)
+  (define-x86-register DI reg 7 16)
+
+  (define-x86-register AL reg 0 8)
+  (define-x86-register CL reg 1 8)
+  (define-x86-register DL reg 2 8)
+  (define-x86-register BL reg 3 8)
+  (define-x86-register AH reg 4 8)
+  (define-x86-register CH reg 5 8)
+  (define-x86-register DH reg 6 8)
+  (define-x86-register BH reg 7 8)
 
 
   )

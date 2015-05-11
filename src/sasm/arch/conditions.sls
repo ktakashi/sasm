@@ -31,9 +31,13 @@
 #!r6rs
 (library (sasm arch conditions)
     (export mnemonic-error
-
 	    &mnemonic mnemonic-error? 
-	    mnemonic-error-name mnemonic-error-operands)
+	    mnemonic-error-name mnemonic-error-operands
+
+	    assembler-error
+	    &assembler assembler-error?
+	    assembler-error-expression
+	    )
     (import (rnrs))
 
   (define-condition-type &mnemonic &error
@@ -47,4 +51,15 @@
 			  (list (make-mnemonic-error mnemomic operands)
 				(and who (make-who-condition who))
 				(make-message-condition msg))))))
+
+  (define-condition-type &assembler &error
+    make-assembler-error assembler-error?
+    (expression assembler-error-expression))
+  (define (assembler-error who expr msg . irr)
+    (raise (apply condition
+		  (filter values
+			  (list (make-assembler-error expr)
+				(and who (make-who-condition who))
+				(make-message-condition msg)
+				(make-irritants-condition irr))))))
 )
