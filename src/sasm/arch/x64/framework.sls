@@ -40,11 +40,12 @@
 	    register-name
 	    register-index
 	    register+displacement?
-	    make-far-address ;; maybe shouldn't export this?
+	    make-relocation-address ;; maybe shouldn't export this?
+	    relocation-address?
 	    &
-	    far)
+	    rel)
     (import (rnrs) 
-	    (except (sasm arch x86 framework) far)
+	    (except (sasm arch x86 framework) rel)
 	    (sasm arch conditions))
 
   (define-syntax define-x64-mnemonic
@@ -71,7 +72,7 @@
 				  operands))))))
 	      (else '()))))
 
-  (define (far label)
-    (make-far-address 'q label))
+  (define (rel label)
+    (make-relocation-address 'q label))
 
 )

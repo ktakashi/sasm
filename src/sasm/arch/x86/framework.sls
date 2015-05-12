@@ -44,10 +44,11 @@
 	    register-index
 	    register+displacement?
 
-	    make-far-address ;; for x64 framework
+	    make-relocation-address ;; for x64 framework
+	    relocation-address?
 	    ;; addressing
 	    &
-	    far
+	    rel
 	    )
     (import (rnrs)
 	    (rnrs mutable-pairs)
@@ -121,17 +122,19 @@
 
   (define-record-type address
     (fields address))
-  (define-record-type far-address
-    (fields type
-	    label) ;; v/q. v: 32 bit, q: 64 bit
+  (define-record-type relocation-address
+    (fields type ;; v/q. v: 32 bit, q: 64 bit (may not be needed)
+	    label)
     (parent address)
     (protocol
      (lambda (p)
        (lambda (type label)
+	 ;; set address 0 for my convenience.
+	 ;; this value will be used to emit address displacement
 	 ((p 0) type label)))))
 
   ;; this is for 32 bit
-  (define (far label) (make-far-address 'v label))
+  (define (rel label) (make-relocation-address 'v label))
 
   (define & 
     (case-lambda 
@@ -333,9 +336,9 @@
 			   ((register? r/m)
 			    (bitwise-and (register-index r/m) #x07))
 			   ((address? r/m) 
-			    (if (prefixer 'addressing #f #f) ;; need rip
-				#x04   ;; disp+rip (64 bit)
-				#x05)) ;; displacement only
+			    (if (relocation-address? r/m)
+				#x05   ;; disp+rip (64 bit)
+				#x04)) ;; displacement only
 			   (else 0)))))
 
     (define (compose-sib operands args) 
@@ -460,12 +463,9 @@
 
     (define (find-label operands args) 
       ;; for now very simple
-      (let ((labels (filter values
-			    (map (lambda (s) 
-				   (or (and (symbol? s) s)
-				       (and (far-address? s)
-					    (far-address-label s))))
-				 args))))
+      (let ((labels (filter (lambda (s) (or (symbol? s) 
+					    (relocation-address? s)))
+			    args)))
 	;; I don't think there would multiple labels but for
 	;; my convenience.
 	(and (not (null? labels))

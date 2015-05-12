@@ -16,7 +16,7 @@
 (test-error "ADD" mnemonic-error? (x64:ADD x64:RAX "invalid"))
 
 (define-syntax test-values
-  (syntax-rules (or)
+  (syntax-rules (or ?)
     ((_ "tmp" name (e e* ...) (expected ...) (var ...) (var2 ... ) expr)
      (test-values "tmp" name (e* ...) (expected ... e) 
 		  (var ... t) (var2 ... t2)
@@ -30,6 +30,10 @@
        (test-values "equal" name (expected ...) (var ...))))
     ;; compare
     ((_ "equal" name () ()) (values))
+    ((_ "equal" name ((? pred) e* ...) (v1 v* ...))
+     (begin
+       (test-assert '(name (? pred)) (pred v1))
+       (test-values "equal" name (e* ...) (v* ...))))
     ((_ "equal" name ((or e ...) e* ...) (v1 v* ...))
      (begin
        (test-assert '(name (or e ...)) (member v1 '(e ...)))
@@ -95,5 +99,10 @@
 
 (test-values (#vu8(#xe8 #x00 #x00 #x00 #x00) '(bar))
 	     (x64:CALL 'bar))
+
+(define (relocation-addresses? l)
+  (for-all x64:relocation-address? l))
+(test-values (#vu8(#xff #x15 #x00 #x00 #x00 #x00) (? relocation-addresses?))
+	     (x64:CALL (x64:rel 'bar)))
 
 (test-end)
