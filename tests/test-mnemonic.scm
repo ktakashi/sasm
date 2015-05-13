@@ -15,8 +15,20 @@
 (test-error "cpuid" mnemonic-error? (x64:CPUID 1 2 3))
 (test-error "ADD" mnemonic-error? (x64:ADD x64:RAX "invalid"))
 
+(define (find-accessor rtd slot)
+  (let loop ((rtd rtd))
+    (if rtd
+	(let ((fields (record-type-field-names rtd)))
+	  (let lp ((i 0))
+	    (cond ((= i (vector-length fields)) (loop (record-type-parent rtd)))
+		  ((eq? (vector-ref fields i) slot) 
+		   (record-accessor rtd i))
+		  (else (lp (+ i 1))))))
+	;; slot name error
+	(lambda (o) (error 'find-accessor "no such slot" slot)))))
+
 (define-syntax test-values
-  (syntax-rules (or ?)
+  (syntax-rules (or ? ~ list)
     ((_ "tmp" name (e e* ...) (expected ...) (var ...) (var2 ... ) expr)
      (test-values "tmp" name (e* ...) (expected ... e) 
 		  (var ... t) (var2 ... t2)
@@ -30,6 +42,21 @@
        (test-values "equal" name (expected ...) (var ...))))
     ;; compare
     ((_ "equal" name () ()) (values))
+    ;; de-construct list
+    ((_ "equal" name ((list e ...) e* ...) (v1 v* ...))
+     (begin
+       (test-values "list" name (e ...) v1)
+       (test-values "equal" name (e* ...) (v* ...))))
+    ;; record inspection
+    ((_ "equal" name ((~ (slot e) ...) e* ...) (v1 v* ...))
+     (begin
+       (if (record? v1) ;; record must be opaque
+	   (let ((rtd (record-rtd v1)))
+	     (let ((acc (find-accessor rtd 'slot)))
+	       (test-equal '(name (~ slot e)) e (acc v1)))
+	     ...)
+	   (test-assert '(name (~ (slot e) ...)) #f))
+       (test-values "equal" name (e* ...) (v* ...))))
     ((_ "equal" name ((? pred) e* ...) (v1 v* ...))
      (begin
        (test-assert '(name (? pred)) (pred v1))
@@ -42,6 +69,12 @@
      (begin
        (test-equal '(name e) e v1)
        (test-values "equal" name (e* ...) (v* ...))))
+    ;; comparing list elements
+    ((_ "list" name (e e* ...) v1)
+     (begin 
+       (test-values "equal" name (e) ((car v1)))
+       (test-values "list"  name (e* ...) (cdr v1))))
+    ((_ "list" name () v1) (values))
     ((_ (expected ...) expr)
      (test-values expr (expected ...) expr))
     ((_ name (expected ...) expr)
@@ -103,6 +136,9 @@
 (define (relocation-addresses? l)
   (for-all x64:relocation-address? l))
 (test-values (#vu8(#xff #x15 #x00 #x00 #x00 #x00) (? relocation-addresses?))
+	     (x64:CALL (x64:rel 'bar)))
+(test-values (#vu8(#xff #x15 #x00 #x00 #x00 #x00) 
+	      (list (~ (label 'bar) (address 0))))
 	     (x64:CALL (x64:rel 'bar)))
 
 (test-end)
