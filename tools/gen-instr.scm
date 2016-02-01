@@ -96,16 +96,18 @@ exec sagittarius $0 "$@"
 	       (import (rnrs) (sasm arch ,(string->symbol arch) framework))
 	     ,@(map (lambda (def) `(,(define-name) . ,def)) 
 		    (order-mnemonics (append one-byte two-bytes)))
-	     (define *mnemonic-table* (make-eq-hashtable))
 	     (define (lookup-mnemonic name) 
 	       (hashtable-ref *mnemonic-table* name #f))
-	     ,@(map (lambda (name)
+	     (define *mnemonic-table* 
+	       (let ((ht (make-eq-hashtable)))
+		 ,@(append-map 
+		    (lambda (name)
 		      (let ((sname (string->symbol 
 				    (string-downcase (symbol->string name)))))
-			`(begin
-			   (hashtable-set! *mnemonic-table* ',name ,name)
-			   (hashtable-set! *mnemonic-table* ',sname ,name))))
+			`((hashtable-set! ht ',name ,name)
+			  (hashtable-set! ht ',sname ,name))))
 		    names)
+		 ht))
 	     )
 	  out))))
 
