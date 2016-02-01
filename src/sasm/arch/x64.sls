@@ -65,6 +65,7 @@
     (cond ((pair? e) 
 	   (case (car e)
 	     ((&) (apply & (cdr e)))
+	     ((rel) (apply rel (cdr e)))
 	     (else (assembler-error 'sasm-assemble e 
 				    "unknown operand" (car e)))))
 	  ((lookup-register e))
@@ -72,15 +73,18 @@
   (case (car expr)
     ((section)
      (when section 
-       (assembler-error 'sasm-assemble expr
-			"nested section is not allowed"))
+       (assembler-error 'sasm-assemble expr "nested section is not allowed"))
      (unless (string? (cadr expr))
-       (assembler-error 'sasm-assemble expr
-			"section name must be string"))
+       (assembler-error 'sasm-assemble expr "section name must be string"))
      (let ((s (sasm-output-create-section! output (cadr expr))))
        (for-each (lambda (e) (sasm-assemble1 output s e)) (cddr expr))))
-    ((label) ;; TODO
-     #f)
+    ((label)
+     (when section 
+       (assembler-error 'sasm-assemble expr "nested label is not allowed"))
+     (unless (symbol? (cadr expr))
+       (assembler-error 'sasm-assemble expr "label must be symbol"))
+     (let ((l (sasm-output-create-label! output (cadr expr))))
+       (for-each (lambda (e) (sasm-assemble1 output l e)) (cddr expr))))
     ;; TODO more special case (e.g. macro)
     (else
      (cond ((lookup-mnemonic (car expr)) =>
@@ -88,8 +92,7 @@
 	      (let-values (((code label?)
 			    (apply m (map immeidate/register (cdr expr)))))
 		(when label?
-		  ;; TODO handle label
-		  #f)
+		  (sasm-output-add-referencing-label! output label? code))
 		(sasm-section-push-code! (ensure-section section) code))))
 	   (else
 	    (assembler-error 'sasm-assemble1 expr 
